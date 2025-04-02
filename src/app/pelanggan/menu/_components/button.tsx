@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 interface Props {
-  id: number;
+  id: string;
 }
 
 export default function Button({ id }: Props) {
