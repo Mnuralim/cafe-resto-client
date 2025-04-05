@@ -61,18 +61,7 @@ export default function DashboardAdmin() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      {/* Sidebar */}
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        activeMenu={activeMenu}
-        handleMenuClick={handleMenuClick}
-        closeSidebar={closeSidebar}
-      />
-
-      {/* Main Content */}
       <div className="flex-1">
-        <Navbar toggleSidebar={toggleSidebar} />
-
         {/* Statistik Pendapatan, Menu, Meja, dan Orders */}
         <div className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

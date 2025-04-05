@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2"; // Import sweetalert2
+import { customRevaldation } from "@/action";
 
 const AccountPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -57,7 +58,6 @@ const AccountPage = () => {
       password: formData.password,
     });
     setIsEditMode(false); // Kembali ke mode read-only setelah update
-
     // Tampilkan alert sukses
     Swal.fire({
       title: "Sukses!",
@@ -66,6 +66,7 @@ const AccountPage = () => {
       confirmButtonColor: "#6A67CE",
       confirmButtonText: "OK",
     });
+    customRevaldation("/admin/menu", "layout");
   };
 
   // Fungsi untuk handle logout dengan alert konfirmasi
@@ -88,14 +89,7 @@ const AccountPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        activeMenu={activeMenu}
-        handleMenuClick={handleMenuClick}
-        closeSidebar={closeSidebar}
-      />
       <div className="flex-1">
-        <Navbar toggleSidebar={toggleSidebar} />
         <div className="p-6">
           {/* Breadcrumb Navigation */}
           <nav className="flex mb-6" aria-label="Breadcrumb">

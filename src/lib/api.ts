@@ -34,6 +34,51 @@ export async function getAllMenus(
   return data;
 }
 
+export async function getMenuById(id: string) {
+  const response = await fetch(`${API_URL}/menus/${id}`, {
+    next: {
+      revalidate: 3600 * 24,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch menu");
+  }
+
+  const resJson = await response.json();
+  const data: IMenu = resJson.data;
+  return data;
+}
+
+export async function createMenu(data: FormData) {
+  const response = await fetch(`${API_URL}/menus`, {
+    method: "POST",
+    credentials: "include",
+    body: data,
+  });
+
+  return response;
+}
+
+export async function updateMenu(id: string, data: FormData) {
+  const response = await fetch(`${API_URL}/menus/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    body: data,
+  });
+
+  return response;
+}
+
+export async function deleteMenu(id: string) {
+  const response = await fetch(`${API_URL}/menus/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  return response;
+}
+
 export async function getAllCategories() {
   const response = await fetch(`${API_URL}/menus/categories`, {
     next: {
@@ -49,3 +94,89 @@ export async function getAllCategories() {
   const data: ICategory[] = resJson.data;
   return data;
 }
+
+export async function getAllTables() {
+  const response = await fetch(`${API_URL}/tables`, {
+    next: {
+      revalidate: 3600 * 24,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch categories");
+  }
+
+  const resJson = await response.json();
+  const data: ITable[] = resJson.data;
+  return data;
+}
+
+export async function getAllOrders() {
+  const response = await fetch(`${API_URL}/orders`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch orders");
+  }
+
+  const resJson = await response.json();
+  const data: IOrder[] = resJson.data;
+  return data;
+}
+
+export async function login(username: string, password: string) {
+  const response = await fetch(`${API_URL}/admin/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  return response;
+}
+
+export const createTable = async (tableNumber: number) => {
+  const response = await fetch(`${API_URL}/tables`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      tableNumber,
+    }),
+  });
+
+  return response;
+};
+
+export const updateTable = async (tableId: string, tableNumber: number) => {
+  const response = await fetch(`${API_URL}/tables/${tableId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      tableNumber,
+    }),
+  });
+
+  return response;
+};
+
+export const deleteTable = async (tableId: string) => {
+  const response = await fetch(`${API_URL}/tables/${tableId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  return response;
+};

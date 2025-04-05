@@ -5,6 +5,7 @@ interface IMenu {
   price: number;
   status: boolean;
   admin_id: string;
+  category: ICategory;
   category_id: string;
   created_at: string;
   updated_at: string;
@@ -34,4 +35,50 @@ interface MenuApiResponse {
 interface ICategory {
   id: string;
   name: string;
+}
+
+interface ITable {
+  id: string;
+  number: number;
+  qr_code: string;
+  admin_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface IOrderItem {
+  id: string;
+  quantity: number;
+  price: number;
+  note: string;
+  order_id: string;
+  menu_id: string;
+  created_at: string;
+  updated_at: string;
+  menu: IMenu;
+}
+
+type OrderStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "CANCELLED";
+
+interface IOrder {
+  id: string;
+  customer_name: string;
+  total_price: number;
+  payment_status: boolean;
+  note: string;
+  status: OrderStatus;
+  table_id: string;
+  created_at: string;
+  updated_at: string;
+  table: ITable;
+  orderItems: IOrderItem[];
+}
+
+interface ITable {
+  id: string;
+  number: number;
+  qr_code: string;
+  admin_id: string;
+  created_at: string;
+  updated_at: string;
 }

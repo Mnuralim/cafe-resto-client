@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { FaBars, FaSearch, FaBell } from "react-icons/fa";
 
@@ -7,6 +8,8 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
+  const pathname = usePathname();
+  if (pathname === "/admin/login") return null;
   return (
     <div className="p-4 bg-white shadow-md">
       <div className="flex justify-between items-center">

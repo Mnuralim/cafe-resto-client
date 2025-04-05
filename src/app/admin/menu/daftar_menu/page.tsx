@@ -98,12 +98,6 @@ const MenuPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-50 to-gray-100 flex">
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        activeMenu={activeMenu}
-        handleMenuClick={handleMenuClick}
-        closeSidebar={closeSidebar}
-      />
       <div className="flex-1">
         <Navbar toggleSidebar={toggleSidebar} />
         <div className="p-6">
