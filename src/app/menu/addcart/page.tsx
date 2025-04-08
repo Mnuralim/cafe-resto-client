@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import BottomNavigation from "../../bottomnav/bottomnav";
 
 export default function KeranjangPage() {
   // State untuk jumlah pesanan
@@ -188,7 +187,6 @@ export default function KeranjangPage() {
           </Link>
         </div>
       </div>
-      <BottomNavigation />
     </div>
   );
 }

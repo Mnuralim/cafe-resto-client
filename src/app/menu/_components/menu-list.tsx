@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Swiper, SwiperSlide, type SwiperRef } from "swiper/react";
 import "swiper/css";
 import Button from "./button";
-import BottomNavigation from "../../bottomnav/bottomnav";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
@@ -27,7 +26,7 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
       newParams.set("category", category);
     }
 
-    replace(`/pelanggan/menu?${newParams.toString()}`);
+    replace(`/menu?${newParams.toString()}`);
   };
 
   const categoriesWithAll = [{ id: "semua", name: "Semua" }, ...categories];
@@ -96,9 +95,6 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
           </div>
         </SwiperSlide>
       </Swiper>
-      <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg z-50">
-        <BottomNavigation />
-      </div>
     </>
   );
 };

@@ -3,7 +3,6 @@
 import React from "react";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa"; // Ikon modern dari react-icons
 import { useRouter } from "next/navigation"; // Untuk navigasi
-import BottomNavigation from "../../bottomnav/bottomnav"; // Sesuaikan path
 
 export default function Riwayat() {
   const router = useRouter(); // Hook untuk navigasi
@@ -94,7 +93,6 @@ export default function Riwayat() {
           ))}
         </div>
       </div>
-      <BottomNavigation />
     </div>
   );
 }

@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { FaArrowLeft, FaSpinner } from "react-icons/fa";
 import Link from "next/link";
-import BottomNavigation from "../../bottomnav/bottomnav";
 
 export default function OrderChecked() {
   const [isChecked, setIsChecked] = useState(false);
@@ -79,7 +78,6 @@ export default function OrderChecked() {
           </button>
         </Link>
       </div>
-      <BottomNavigation />
     </div>
   );
 }
