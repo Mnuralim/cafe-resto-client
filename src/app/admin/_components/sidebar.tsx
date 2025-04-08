@@ -15,7 +15,7 @@ const navItems = [
   {
     title: "Dashboard",
     icon: <FaChartLine />,
-    path: "/admin/dashboard",
+    path: "/admin",
   },
   {
     title: "Meja",

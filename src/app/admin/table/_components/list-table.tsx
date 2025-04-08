@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { FaPlus, FaTrash, FaHome, FaPrint } from "react-icons/fa";
+import { FaPlus, FaTrash, FaPrint } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
-import Link from "next/link";
 import QRCode from "qrcode";
 import Image from "next/image";
 import Swal from "sweetalert2";
@@ -147,33 +146,7 @@ export const ListTable = ({ tables }: Props) => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <div className="flex-1 p-6">
-        <nav className="flex mb-6">
-          <ol className="inline-flex items-center space-x-2">
-            <li className="inline-flex items-center">
-              <Link
-                href="/admin/dashboard"
-                className="text-sm text-gray-700 hover:text-[#3533A1] flex items-center"
-              >
-                <FaHome className="mr-2" /> Dashboard
-              </Link>
-            </li>
-            <li>
-              <span className="text-gray-500">/</span>
-              <Link
-                href="/admin/meja"
-                className="text-sm text-gray-700 hover:text-[#3533A1] ml-2"
-              >
-                Meja
-              </Link>
-            </li>
-            <li>
-              <span className="text-gray-500">/</span>
-              <span className="text-sm text-[#3533A1] ml-2">Data Meja</span>
-            </li>
-          </ol>
-        </nav>
-
+      <div className="flex-1 px-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-[#3533A1]">Data Meja</h1>
           <button

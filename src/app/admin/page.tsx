@@ -1,7 +1,4 @@
 "use client";
-import React, { useState } from "react";
-import Sidebar from "../_components/sidebar";
-import Navbar from "../_components/navbar";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -25,14 +22,6 @@ ChartJS.register(
 );
 
 export default function DashboardAdmin() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("dashboard");
-
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-  const closeSidebar = () => setIsSidebarOpen(false);
-  const handleMenuClick = (menu: string) => setActiveMenu(menu);
-
-  // Data untuk grafik pendapatan
   const data = {
     labels: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul"],
     datasets: [

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Sidebar from "./_components/sidebar";
 import Navbar from "./_components/navbar";
+import { Breadcrumb } from "./_components/bread-crumb";
 
 export const metadata: Metadata = {
   title: "Coffee & Resto | Admin",
@@ -14,10 +15,11 @@ export default function AdminLayout({
 }>) {
   return (
     <>
-      <div className="min-h-screen bg-gray-100 md:flex hidden bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gray-100 md:flex hidden bg-gradient-to-r from-gray-50 to-gray-100 text-black">
         <Sidebar />
         <div className="w-full">
           <Navbar />
+          <Breadcrumb />
           {children}
         </div>
       </div>

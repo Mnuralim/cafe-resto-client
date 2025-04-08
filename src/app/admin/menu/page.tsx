@@ -7,7 +7,7 @@ export default async function MenuPage() {
     getAllCategories(),
   ]);
   return (
-    <main className="px-5 mt-10">
+    <main className="px-5">
       <ListMenu data={menus} categories={categories} />
     </main>
   );

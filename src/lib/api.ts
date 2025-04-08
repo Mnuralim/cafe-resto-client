@@ -123,6 +123,33 @@ export async function getAllOrders() {
   return data;
 }
 
+export async function getOrderById(id: string) {
+  const response = await fetch(`${API_URL}/orders/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch order");
+  }
+
+  const resJson = await response.json();
+  const data: IOrder = resJson.data;
+  return data;
+}
+
+export async function updateOrderStatus(id: string, status: OrderStatus) {
+  const response = await fetch(`${API_URL}/orders/${id}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      status,
+    }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  return response;
+}
+
 export async function login(username: string, password: string) {
   const response = await fetch(`${API_URL}/admin/login`, {
     method: "POST",
