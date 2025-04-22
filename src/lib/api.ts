@@ -123,6 +123,37 @@ export async function getAllOrders() {
   return data;
 }
 
+export const createOrder = async (
+  latitude: number,
+  longitude: number,
+  customerName: string,
+  tableId: string,
+  items: {
+    menuId: string;
+    quantity: number;
+    note?: string;
+  }[],
+  note?: string
+) => {
+  const response = await fetch(`${API_URL}/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      latitude,
+      longitude,
+      customerName,
+      tableId,
+      items,
+      note,
+    }),
+  });
+
+  return response;
+};
+
 export async function getOrderById(id: string) {
   const response = await fetch(`${API_URL}/orders/${id}`);
 
@@ -206,4 +237,22 @@ export const deleteTable = async (tableId: string) => {
   });
 
   return response;
+};
+
+export const getTableById = async (tableId: string) => {
+  const response = await fetch(`${API_URL}/tables/${tableId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch table");
+  }
+
+  const resJson = await response.json();
+  const data: ITable = resJson.data;
+  return data;
 };

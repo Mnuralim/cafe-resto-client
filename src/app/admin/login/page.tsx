@@ -21,7 +21,7 @@ const LoginPage = () => {
       if (!response.ok) {
         throw new Error(resJson.message);
       }
-      router.push("/admin/dashboard");
+      router.push("/admin");
     } catch (error) {
       setError(error instanceof Error ? error.message : "Login gagal");
       Swal.fire({

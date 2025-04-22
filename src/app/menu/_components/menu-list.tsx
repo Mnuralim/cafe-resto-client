@@ -88,7 +88,13 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
                     <p className="text-gray-600">{"Mantap"}</p>
                     <p className="text-gray-800 font-bold">{item.price}</p>
                   </div>
-                  <Button id={item.id} />
+                  <Button
+                    id={item.id}
+                    name={item.name}
+                    category={item.category}
+                    image={item.image}
+                    price={item.price}
+                  />
                 </div>
               </div>
             ))}

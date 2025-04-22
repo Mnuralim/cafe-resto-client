@@ -82,3 +82,24 @@ interface ITable {
   created_at: string;
   updated_at: string;
 }
+
+interface CartItem {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+  quantity: number;
+  category: {
+    id: string;
+    name: string;
+  };
+}
+interface CartState {
+  items: CartItem[];
+  addItem: (item: Omit<CartItem, "quantity">) => void;
+  removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+  clearCart: () => void;
+  getTotalItems: () => number;
+  getTotalPrice: () => number;
+}
