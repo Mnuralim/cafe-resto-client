@@ -54,6 +54,8 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
     }));
   };
 
+  console.log(latitudeData, longitudeData);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

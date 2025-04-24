@@ -85,7 +85,9 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
                     <h2 className="text-xl font-bold text-gray-800">
                       {item.name}
                     </h2>
-                    <p className="text-gray-600">{"Mantap"}</p>
+                    <p className="text-gray-600">
+                      {item.status ? "tersedia" : "kosong"}
+                    </p>
                     <p className="text-gray-800 font-bold">{item.price}</p>
                   </div>
                   <Button
