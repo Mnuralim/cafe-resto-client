@@ -74,6 +74,18 @@ interface IOrder {
   orderItems: IOrderItem[];
 }
 
+interface INotification {
+  id: string;
+  message: string;
+  read: boolean;
+  admin_id: string;
+  order_id: string;
+  type: "NEW_ORDER" | "ORDER_STATUS_CHANGE" | "PAYMENT_RECEIVED";
+  created_at: string;
+  updated_at: string;
+  order: IOrder;
+}
+
 interface ITable {
   id: string;
   number: number;

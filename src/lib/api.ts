@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL!;
+const API_URL =
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1` || "http://localhost:5000/api/v1";
 
 export async function getAllMenus(
   search?: string,
@@ -108,6 +109,23 @@ export async function getAllTables() {
 
   const resJson = await response.json();
   const data: ITable[] = resJson.data;
+  return data;
+}
+
+export async function getAllNotifications(token: string) {
+  const response = await fetch(`${API_URL}/notifications`, {
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch notifications");
+  }
+  const resJson = await response.json();
+
+  const data: INotification[] = resJson.data;
   return data;
 }
 

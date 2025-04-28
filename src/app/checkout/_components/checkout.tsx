@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cart";
 import Link from "next/link";
 import Image from "next/image";
 import { createOrder } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 interface Props {
   tableNumberData: number;
@@ -13,9 +13,7 @@ interface Props {
 }
 
 export const Checkout = ({ tableNumberData, tableId }: Props) => {
-  const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
-
   const [customerName, setCustomerName] = useState<string>("");
   const [generalNotes, setGeneralNotes] = useState<string>("");
   const [latitudeData, setLatitudeData] = useState<number | null>(null);
@@ -23,12 +21,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
   const [itemNotes, setItemNotes] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (items.length === 0) {
-      router.push("/menu");
-    }
-  }, [items, router]);
+  const router = useRouter();
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -53,8 +46,6 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
       [id]: note,
     }));
   };
-
-  console.log(latitudeData, longitudeData);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,15 +81,14 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
         })),
         generalNotes
       );
-      const data = await response.json();
-
+      const resJson = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Gagal membuat pesanan");
+        throw new Error(resJson.message || "Gagal membuat pesanan");
       }
-
+      const data = resJson.data;
       clearCart();
       alert("Pesanan berhasil dibuat");
-      // router.push(`/order-success?id=${data.orderId}`);
+      router.push(`/history/${data.id}?table=${tableId}`);
     } catch (error) {
       console.error("Error submitting order:", error);
       setError(
