@@ -274,3 +274,18 @@ export const getTableById = async (tableId: string) => {
   const data: ITable = resJson.data;
   return data;
 };
+
+export const readNotification = async (notificationId: string) => {
+  const response = await fetch(
+    `${API_URL}/notifications/${notificationId}/read`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
+
+  return response;
+};

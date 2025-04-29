@@ -86,15 +86,6 @@ interface INotification {
   order: IOrder;
 }
 
-interface ITable {
-  id: string;
-  number: number;
-  qr_code: string;
-  admin_id: string;
-  created_at: string;
-  updated_at: string;
-}
-
 interface CartItem {
   id: string;
   name: string;

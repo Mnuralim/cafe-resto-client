@@ -1,15 +1,9 @@
 "use client";
-import { getAllNotifications } from "@/lib/api";
+import { getAllNotifications, readNotification } from "@/lib/api";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import { FaBell } from "react-icons/fa";
 import { io, Socket } from "socket.io-client";
-
-interface INotification {
-  id: string;
-  message: string;
-  read: boolean;
-  created_at: string;
-}
 
 interface Props {
   token: string;
@@ -26,6 +20,7 @@ export const NotificationList = ({ token }: Props) => {
   const notifRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const router = useRouter();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -148,35 +143,21 @@ export const NotificationList = ({ token }: Props) => {
       }
     });
 
-    socket.on("order-status-change", (notification) => {
-      console.log("Order status change notification received:", notification);
-      setNotifications((prev) => [notification, ...prev]);
-      setUnreadCount((prev) => prev + 1);
-      if (audioRef.current) {
-        audioRef.current.play().catch((err) => {
-          console.error("Failed to play notification sound:", err);
-        });
-      }
+    // SOON
+    // socket.on("payment-received", (notification) => {
+    //   console.log("Payment received notification received:", notification);
+    //   setNotifications((prev) => [notification, ...prev]);
+    //   setUnreadCount((prev) => prev + 1);
+    //   if (audioRef.current) {
+    //     audioRef.current.play().catch((err) => {
+    //       console.error("Failed to play notification sound:", err);
+    //     });
+    //   }
 
-      if (notificationPermission === "granted") {
-        showBrowserNotification("Status Pesanan Berubah", notification.message);
-      }
-    });
-
-    socket.on("payment-received", (notification) => {
-      console.log("Payment received notification received:", notification);
-      setNotifications((prev) => [notification, ...prev]);
-      setUnreadCount((prev) => prev + 1);
-      if (audioRef.current) {
-        audioRef.current.play().catch((err) => {
-          console.error("Failed to play notification sound:", err);
-        });
-      }
-
-      if (notificationPermission === "granted") {
-        showBrowserNotification("Pembayaran Diterima", notification.message);
-      }
-    });
+    //   if (notificationPermission === "granted") {
+    //     showBrowserNotification("Pembayaran Diterima", notification.message);
+    //   }
+    // });
 
     return () => {
       if (socketRef.current) {
@@ -207,21 +188,19 @@ export const NotificationList = ({ token }: Props) => {
   }, []);
 
   const handleNotificationClick = async (notifId: string) => {
+    const currentNotif = notifications.find((notif) => notif.id === notifId);
+    if (currentNotif?.read) {
+      router.push(`/admin/orders/${currentNotif.order_id}`);
+      return;
+    }
     try {
-      const response = await fetch(
-        `${API_URL}/api/v1/notifications/${notifId}/read`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const response = await readNotification(notifId);
       if (!response.ok) {
         throw new Error("Failed to mark notification as read");
       }
+
+      const resJson = await response.json();
+      const data: INotification = resJson.data;
 
       setNotifications((prev) =>
         prev.map((notif) =>
@@ -230,6 +209,7 @@ export const NotificationList = ({ token }: Props) => {
       );
 
       setUnreadCount((prev) => Math.max(0, prev - 1));
+      router.push(`/admin/orders/${data.order_id}`);
     } catch (error) {
       console.error("Failed to mark notification as read:", error);
     }

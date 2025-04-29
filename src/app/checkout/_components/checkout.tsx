@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createOrder } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { useOrderHistoryStore } from "@/store/order-history";
 
 interface Props {
   tableNumberData: number;
@@ -14,6 +15,7 @@ interface Props {
 
 export const Checkout = ({ tableNumberData, tableId }: Props) => {
   const { items, getTotalPrice, clearCart } = useCartStore();
+  const { addOrder } = useOrderHistoryStore();
   const [customerName, setCustomerName] = useState<string>("");
   const [generalNotes, setGeneralNotes] = useState<string>("");
   const [latitudeData, setLatitudeData] = useState<number | null>(null);
@@ -85,8 +87,9 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
       if (!response.ok) {
         throw new Error(resJson.message || "Gagal membuat pesanan");
       }
-      const data = resJson.data;
+      const data: IOrder = resJson.data;
       clearCart();
+      addOrder(data);
       alert("Pesanan berhasil dibuat");
       router.push(`/history/${data.id}?table=${tableId}`);
     } catch (error) {

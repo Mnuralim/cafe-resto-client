@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaPrint } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { io, Socket } from "socket.io-client";
 
 interface Props {
   order: IOrder;
@@ -33,7 +34,45 @@ const orderStatusInfo = {
 };
 
 export const UserOrderDetail = ({ order }: Props) => {
-  const currentStatus = orderStatusInfo[order.status];
+  const [orderData, setOrderData] = useState<IOrder>(order);
+  const socketRef = useRef<Socket | null>(null);
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const currentStatus = orderStatusInfo[orderData.status];
+
+  useEffect(() => {
+    const socket = io(API_URL, {
+      withCredentials: true,
+      transports: ["websocket", "polling"],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 20000,
+    });
+
+    socketRef.current = socket;
+
+    socket.on("order-status-change", (data) => {
+      const orderDataRealTime: IOrder = data.data;
+      if (orderDataRealTime.id === orderData.id) {
+        setOrderData((prevData) => ({
+          ...prevData,
+          status: orderDataRealTime.status,
+        }));
+      }
+    });
+
+    return () => {
+      if (socketRef.current) {
+        if (socketRef.current.connected) {
+          socketRef.current.emit("leave-order-room", { orderId: order.id });
+        }
+        socketRef.current.disconnect();
+        console.log("Socket disconnected during cleanup");
+      }
+    };
+  }, [API_URL, order.id, orderData.id]);
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
@@ -46,7 +85,7 @@ export const UserOrderDetail = ({ order }: Props) => {
             <FaArrowLeft className="text-gray-700" />
           </Link>
           <h1 className="text-xl font-bold text-gray-800">
-            Pesanan #{order.id.substring(0, 8)}
+            Pesanan #{orderData.id.substring(0, 8)}
           </h1>
         </div>
 
@@ -73,11 +112,11 @@ export const UserOrderDetail = ({ order }: Props) => {
               </div>
               <div className="text-right">
                 <span className="text-xs font-semibold inline-block text-indigo-600">
-                  {order.status === "COMPLETED"
+                  {orderData.status === "COMPLETED"
                     ? "100%"
-                    : order.status === "PROCESSING"
+                    : orderData.status === "PROCESSING"
                     ? "50%"
-                    : order.status === "PENDING"
+                    : orderData.status === "PENDING"
                     ? "25%"
                     : "0%"}
                 </span>
@@ -87,11 +126,11 @@ export const UserOrderDetail = ({ order }: Props) => {
               <div
                 style={{
                   width:
-                    order.status === "COMPLETED"
+                    orderData.status === "COMPLETED"
                       ? "100%"
-                      : order.status === "PROCESSING"
+                      : orderData.status === "PROCESSING"
                       ? "50%"
-                      : order.status === "PENDING"
+                      : orderData.status === "PENDING"
                       ? "25%"
                       : "0%",
                 }}
@@ -104,20 +143,22 @@ export const UserOrderDetail = ({ order }: Props) => {
             <div className="flex items-center mb-4">
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  ["PENDING", "PROCESSING", "COMPLETED"].includes(order.status)
+                  ["PENDING", "PROCESSING", "COMPLETED"].includes(
+                    orderData.status
+                  )
                     ? "bg-indigo-600"
                     : "bg-gray-300"
                 }`}
               >
                 {["PENDING", "PROCESSING", "COMPLETED"].includes(
-                  order.status
+                  orderData.status
                 ) && <div className="w-2 h-2 bg-white rounded-full"></div>}
               </div>
               <div className="ml-3">
                 <p
                   className={`text-sm font-medium ${
                     ["PENDING", "PROCESSING", "COMPLETED"].includes(
-                      order.status
+                      orderData.status
                     )
                       ? "text-indigo-600"
                       : "text-gray-500"
@@ -126,10 +167,10 @@ export const UserOrderDetail = ({ order }: Props) => {
                   Pesanan Diterima
                 </p>
                 {["PENDING", "PROCESSING", "COMPLETED"].includes(
-                  order.status
+                  orderData.status
                 ) && (
                   <p className="text-xs text-gray-500">
-                    {formatDate(order.created_at)}
+                    {formatDate(orderData.created_at)}
                   </p>
                 )}
               </div>
@@ -138,19 +179,19 @@ export const UserOrderDetail = ({ order }: Props) => {
             <div className="flex items-center mb-4">
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  ["PROCESSING", "COMPLETED"].includes(order.status)
+                  ["PROCESSING", "COMPLETED"].includes(orderData.status)
                     ? "bg-indigo-600"
                     : "bg-gray-300"
                 }`}
               >
-                {["PROCESSING", "COMPLETED"].includes(order.status) && (
+                {["PROCESSING", "COMPLETED"].includes(orderData.status) && (
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 )}
               </div>
               <div className="ml-3">
                 <p
                   className={`text-sm font-medium ${
-                    ["PROCESSING", "COMPLETED"].includes(order.status)
+                    ["PROCESSING", "COMPLETED"].includes(orderData.status)
                       ? "text-indigo-600"
                       : "text-gray-500"
                   }`}
@@ -163,17 +204,19 @@ export const UserOrderDetail = ({ order }: Props) => {
             <div className="flex items-center">
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  order.status === "COMPLETED" ? "bg-indigo-600" : "bg-gray-300"
+                  orderData.status === "COMPLETED"
+                    ? "bg-indigo-600"
+                    : "bg-gray-300"
                 }`}
               >
-                {order.status === "COMPLETED" && (
+                {orderData.status === "COMPLETED" && (
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 )}
               </div>
               <div className="ml-3">
                 <p
                   className={`text-sm font-medium ${
-                    order.status === "COMPLETED"
+                    orderData.status === "COMPLETED"
                       ? "text-indigo-600"
                       : "text-gray-500"
                   }`}
@@ -193,26 +236,72 @@ export const UserOrderDetail = ({ order }: Props) => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Nama Pemesan</span>
-                <span className="font-medium">{order.customer_name}</span>
+                <span className="font-medium">{orderData.customer_name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Meja</span>
-                <span className="font-medium">Meja {order.table.number}</span>
+                <span className="font-medium">
+                  Meja {orderData.table.number}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tanggal Pesanan</span>
                 <span className="font-medium">
-                  {formatDate(order.created_at)}
+                  {formatDate(orderData.created_at)}
                 </span>
               </div>
-              {order.note && (
+              {orderData.note && (
                 <div>
                   <span className="text-gray-600">Catatan:</span>
                   <p className="mt-1 text-sm text-gray-600 p-3 bg-gray-50 rounded-md">
-                    {order.note}
+                    {orderData.note}
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden ">
+            <div className="px-6 py-4 bg-indigo-600 text-white">
+              <h2 className="text-lg font-semibold">Detail Item Pesanan</h2>
+            </div>
+            <div className="p-6">
+              {orderData.orderItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex flex-col sm:flex-row justify-between border-b border-gray-200 py-4 last:border-b-0"
+                >
+                  <div className="flex">
+                    <div className="h-16 w-16 relative rounded-md overflow-hidden flex-shrink-0">
+                      <Image
+                        width={400}
+                        height={400}
+                        src={item.menu.image}
+                        alt={item.menu.name}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {item.menu.name}
+                      </div>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {formatCurrency(item.menu.price)} x {item.quantity}
+                      </div>
+                      {item.note && (
+                        <div className="text-xs text-gray-500 mt-1 italic">
+                          Catatan: {item.note}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right mt-2 sm:mt-0">
+                    <div className="text-sm font-medium text-gray-900">
+                      {formatCurrency(item.price)}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -224,7 +313,7 @@ export const UserOrderDetail = ({ order }: Props) => {
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
                 <span className="font-medium">
-                  {formatCurrency(order.total_price)}
+                  {formatCurrency(orderData.total_price)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -235,7 +324,7 @@ export const UserOrderDetail = ({ order }: Props) => {
               <div className="flex justify-between font-bold">
                 <span className="text-gray-800">Total</span>
                 <span className="text-indigo-600 text-lg">
-                  {formatCurrency(order.total_price)}
+                  {formatCurrency(orderData.total_price)}
                 </span>
               </div>
               <div className="border-t border-gray-200 my-2 pt-2"></div>
@@ -245,79 +334,15 @@ export const UserOrderDetail = ({ order }: Props) => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
-          <div className="px-6 py-4 bg-indigo-600 text-white">
-            <h2 className="text-lg font-semibold">Detail Item Pesanan</h2>
+          <div className="flex justify-end">
+            <button
+              onClick={() => window.print()}
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center"
+            >
+              <FaPrint className="mr-2" />
+              Cetak Struk
+            </button>
           </div>
-          <div className="p-6">
-            {order.orderItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-col sm:flex-row justify-between border-b border-gray-200 py-4 last:border-b-0"
-              >
-                <div className="flex">
-                  <div className="h-16 w-16 relative rounded-md overflow-hidden flex-shrink-0">
-                    <Image
-                      width={400}
-                      height={400}
-                      src={item.menu.image}
-                      alt={item.menu.name}
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">
-                      {item.menu.name}
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      {formatCurrency(item.menu.price)} x {item.quantity}
-                    </div>
-                    {item.note && (
-                      <div className="text-xs text-gray-500 mt-1 italic">
-                        Catatan: {item.note}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="text-right mt-2 sm:mt-0">
-                  <div className="text-sm font-medium text-gray-900">
-                    {formatCurrency(item.price)}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">
-                  {formatCurrency(order.total_price)}
-                </span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Pajak (0%)</span>
-                <span className="font-medium">{formatCurrency(0)}</span>
-              </div>
-              <div className="flex justify-between text-lg font-bold">
-                <span className="text-gray-800">Total</span>
-                <span className="text-indigo-600">
-                  {formatCurrency(order.total_price)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            onClick={() => window.print()}
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center"
-          >
-            <FaPrint className="mr-2" />
-            Cetak Struk
-          </button>
         </div>
       </div>
     </div>
