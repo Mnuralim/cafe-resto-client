@@ -20,9 +20,6 @@ export async function getAllMenus(
 
   const response = await fetch(url, {
     credentials: "include",
-    next: {
-      revalidate: 3600 * 24,
-    },
   });
 
   if (!response.ok) {

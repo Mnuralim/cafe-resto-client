@@ -1,20 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import {
-  FaSearch,
-  FaClipboardList,
-  FaClock,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaSpinner,
-} from "react-icons/fa";
+import { FaSearch, FaClipboardList } from "react-icons/fa";
 import { useOrderHistoryStore } from "@/store/order-history";
 import { PreserveLink } from "@/app/_components/preserver-link";
 
 export const UserOrderHistory = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | OrderStatus>("ALL");
   const { orders } = useOrderHistoryStore();
 
   const filteredOrders = orders.filter((order) => {
@@ -22,42 +14,13 @@ export const UserOrderHistory = () => {
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customer_name.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "ALL" || order.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
+    return matchesSearch;
   });
 
   const sortedOrders = [...filteredOrders].sort(
     (a, b) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
-
-  const getStatusIcon = (status: OrderStatus) => {
-    switch (status) {
-      case "PENDING":
-        return <FaClock className="text-yellow-500" />;
-      case "PROCESSING":
-        return <FaSpinner className="text-blue-500" />;
-      case "COMPLETED":
-        return <FaCheckCircle className="text-green-500" />;
-      case "CANCELLED":
-        return <FaTimesCircle className="text-red-500" />;
-    }
-  };
-
-  const getStatusText = (status: OrderStatus) => {
-    switch (status) {
-      case "PENDING":
-        return "Diterima";
-      case "PROCESSING":
-        return "Diproses";
-      case "COMPLETED":
-        return "Selesai";
-      case "CANCELLED":
-        return "Dibatalkan";
-    }
-  };
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
@@ -79,22 +42,6 @@ export const UserOrderHistory = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-            </div>
-
-            <div className="flex-shrink-0">
-              <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(e.target.value as "ALL" | OrderStatus)
-                }
-              >
-                <option value="ALL">Semua Status</option>
-                <option value="PENDING">Diterima</option>
-                <option value="PROCESSING">Diproses</option>
-                <option value="COMPLETED">Selesai</option>
-                <option value="CANCELLED">Dibatalkan</option>
-              </select>
             </div>
           </div>
         </div>
@@ -123,14 +70,6 @@ export const UserOrderHistory = () => {
                       </div>
 
                       <div className="flex items-center mt-2 md:mt-0">
-                        <div className="flex mr-4">
-                          <div className="flex items-center">
-                            {getStatusIcon(order.status)}
-                            <span className="ml-1 text-sm font-medium">
-                              {getStatusText(order.status)}
-                            </span>
-                          </div>
-                        </div>
                         <div className="font-bold text-indigo-600">
                           {formatCurrency(order.total_price)}
                         </div>
@@ -151,15 +90,14 @@ export const UserOrderHistory = () => {
         ) : (
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
             <div className="text-gray-500 mb-2">
-              {searchTerm || statusFilter !== "ALL"
+              {searchTerm
                 ? "Tidak ada pesanan yang sesuai dengan pencarian"
                 : "Belum ada riwayat pesanan"}
             </div>
-            {(searchTerm || statusFilter !== "ALL") && (
+            {searchTerm && (
               <button
                 onClick={() => {
                   setSearchTerm("");
-                  setStatusFilter("ALL");
                 }}
                 className="text-indigo-600 hover:text-indigo-800 font-medium"
               >

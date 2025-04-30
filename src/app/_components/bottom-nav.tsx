@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { PreserveLink } from "./preserver-link";
 import {
-  FaBoxOpen,
+  // FaBoxOpen,
   FaHistory,
   FaShoppingCart,
   FaUtensils,
@@ -21,11 +21,11 @@ const navItems = [
     icon: <FaShoppingCart />,
     path: "/cart",
   },
-  {
-    title: "Status",
-    icon: <FaBoxOpen />,
-    path: "/status",
-  },
+  // {
+  //   title: "Status",
+  //   icon: <FaBoxOpen />,
+  //   path: "/status",
+  // },
 
   {
     title: "Riwayat",

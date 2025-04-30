@@ -17,8 +17,8 @@ export default async function AdminLayout({
   const cookieStore = cookies();
   const token = (await cookieStore).get("token")?.value;
   return (
-    <>
-      <div className="min-h-screen bg-gray-100 md:flex hidden bg-gradient-to-r from-gray-50 to-gray-100 text-black">
+    <div className="min-h-screen bg-gray-100 bg-gradient-to-r from-gray-50 to-gray-100 text-black">
+      <div className="flex flex-col lg:flex-row">
         <Sidebar />
         <div className="w-full">
           <Navbar token={token!} />
@@ -26,7 +26,6 @@ export default async function AdminLayout({
           {children}
         </div>
       </div>
-      <div className="md:hidden">Buka di desktop mode</div>
-    </>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import { Swiper, SwiperSlide, type SwiperRef } from "swiper/react";
 import "swiper/css";
 import Button from "./button";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 interface Props {
   dataMenu: MenuApiResponse;
@@ -29,6 +30,22 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
     replace(`/menu?${newParams.toString()}`);
   };
 
+  const handleSearch = useDebouncedCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newParams = new URLSearchParams(searchParams);
+      newParams.set("search", e.target.value);
+      replace(`/menu?${newParams.toString()}`);
+    },
+    500
+  );
+
+  const handleReset = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete("search");
+    newParams.delete("category");
+    replace(`/menu?${newParams.toString()}`);
+  };
+
   const categoriesWithAll = [{ id: "semua", name: "Semua" }, ...categories];
 
   return (
@@ -37,6 +54,7 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
         <h1 className="text-2xl text-center font-bold text-gray-800">Menu</h1>
         <div className="mt-4 relative">
           <input
+            onChange={handleSearch}
             type="text"
             placeholder="Cari menu"
             className="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900"
@@ -68,38 +86,52 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
       >
         <SwiperSlide>
           <div className="p-4">
-            {dataMenu.data.map((item) => (
-              <div
-                key={item.id}
-                className="bg-white p-4 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105 mb-4"
-              >
-                <div className="flex items-center space-x-4">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={80}
-                    height={80}
-                    className="rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <h2 className="text-xl font-bold text-gray-800">
-                      {item.name}
-                    </h2>
-                    <p className="text-gray-600">
-                      {item.status ? "tersedia" : "kosong"}
-                    </p>
-                    <p className="text-gray-800 font-bold">{item.price}</p>
+            {dataMenu.data.length > 0 ? (
+              dataMenu.data.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white p-4 rounded-lg shadow-md transform transition-all duration-300 hover:scale-105 mb-4"
+                >
+                  <div className="flex items-center space-x-4">
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={80}
+                      height={80}
+                      className="rounded-lg"
+                    />
+                    <div className="flex-1">
+                      <h2 className="text-xl font-bold text-gray-800">
+                        {item.name}
+                      </h2>
+                      <p className="text-gray-600">
+                        {item.status ? "tersedia" : "kosong"}
+                      </p>
+                      <p className="text-gray-800 font-bold">{item.price}</p>
+                    </div>
+                    <Button
+                      id={item.id}
+                      name={item.name}
+                      category={item.category}
+                      image={item.image}
+                      price={item.price}
+                    />
                   </div>
-                  <Button
-                    id={item.id}
-                    name={item.name}
-                    category={item.category}
-                    image={item.image}
-                    price={item.price}
-                  />
                 </div>
+              ))
+            ) : (
+              <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+                <div className="text-gray-500 mb-2">
+                  Tidak ada menu yang sesuai dengan pencarian
+                </div>
+                <button
+                  onClick={handleReset}
+                  className="text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
+                >
+                  Reset pencarian
+                </button>
               </div>
-            ))}
+            )}
           </div>
         </SwiperSlide>
       </Swiper>

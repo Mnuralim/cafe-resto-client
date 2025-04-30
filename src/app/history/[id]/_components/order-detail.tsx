@@ -52,6 +52,10 @@ export const UserOrderDetail = ({ order }: Props) => {
     });
 
     socketRef.current = socket;
+    socket.on("connect", () => {
+      console.log("Socket connected successfully with ID:", socket.id);
+      socket.emit("join-admin-room");
+    });
 
     socket.on("order-status-change", (data) => {
       const orderDataRealTime: IOrder = data.data;

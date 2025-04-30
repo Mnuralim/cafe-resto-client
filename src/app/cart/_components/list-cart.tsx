@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useCartStore } from "@/store/cart";
 import { PreserveLink } from "@/app/_components/preserver-link";
 
@@ -32,11 +31,12 @@ export const ListCart = () => {
               ></path>
             </svg>
             <p className="text-gray-600 mb-6">Keranjang belanja kamu kosong</p>
-            <Link href="/menu">
-              <button className="px-6 py-2 bg-[#3533A1] text-white rounded-lg hover:bg-[#2a287e] transition-all">
-                Lihat Menu
-              </button>
-            </Link>
+            <PreserveLink
+              href="/menu"
+              className="px-6 py-2 bg-[#3533A1] text-white rounded-lg hover:bg-[#2a287e] transition-all"
+            >
+              Lihat Menu
+            </PreserveLink>
           </div>
         </div>
       </div>
@@ -150,11 +150,12 @@ export const ListCart = () => {
           </div>
 
           <div className="flex space-x-4">
-            <Link href="/menu" className="flex-1">
-              <button className="w-full px-6 py-3 border border-[#3533A1] text-[#3533A1] rounded-lg hover:bg-gray-50 transition-all">
-                Kembali ke Menu
-              </button>
-            </Link>
+            <PreserveLink
+              href="/menu"
+              className="w-full px-6 text-center py-3 border border-[#3533A1] text-[#3533A1] rounded-lg hover:bg-gray-50 transition-all"
+            >
+              Kembali ke Menu
+            </PreserveLink>
             <PreserveLink
               href="/checkout"
               className="flex-1 px-6 py-3 bg-[#3533A1] text-center text-white rounded-lg hover:bg-[#2a287e] transition-all"

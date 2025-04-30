@@ -15,7 +15,7 @@ export default async function DetailOrderPage({ params }: Props) {
   }
 
   return (
-    <div>
+    <div className="w-full">
       <DetailOrder order={order} />
     </div>
   );

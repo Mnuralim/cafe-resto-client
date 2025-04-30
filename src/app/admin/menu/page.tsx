@@ -6,8 +6,9 @@ export default async function MenuPage() {
     getAllMenus(),
     getAllCategories(),
   ]);
+
   return (
-    <main className="px-5">
+    <main className="w-full px-4 sm:px-6 md:px-8 py-6 min-h-screen">
       <ListMenu data={menus} categories={categories} />
     </main>
   );
