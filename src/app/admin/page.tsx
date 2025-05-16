@@ -56,10 +56,10 @@ export default function DashboardAdmin() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Card Pendapatan */}
             <div className="bg-gradient-to-r from-[#6A67CE] to-[#4FD1C5] p-6 rounded-lg text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <h2 className="text-lg font-bold">Rp 300.000</h2>
+              <h2 className="text-lg font-bold">Rp 0</h2>
               <p className="text-sm">Pendapatan</p>
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs">+10% dari bulan lalu</span>
+                <span className="text-xs">+0% dari bulan lalu</span>
                 <span className="text-xs">📈</span>
               </div>
             </div>
@@ -69,27 +69,27 @@ export default function DashboardAdmin() {
               <h2 className="text-lg font-bold">4</h2>
               <p className="text-sm">Menu</p>
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs">+2 menu baru</span>
+                <span className="text-xs">+0 menu baru</span>
                 <span className="text-xs">🍽️</span>
               </div>
             </div>
 
             {/* Card Meja */}
             <div className="bg-gradient-to-r from-[#4FD1C5] to-[#6A67CE] p-6 rounded-lg text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <h2 className="text-lg font-bold">3</h2>
+              <h2 className="text-lg font-bold">2</h2>
               <p className="text-sm">Meja</p>
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs">1 meja tersedia</span>
+                <span className="text-xs">0 meja tersedia</span>
                 <span className="text-xs">🪑</span>
               </div>
             </div>
 
             {/* Card Orders */}
             <div className="bg-gradient-to-r from-[#FF6B6B] to-[#F6AD55] p-6 rounded-lg text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <h2 className="text-lg font-bold">15</h2>
+              <h2 className="text-lg font-bold">3</h2>
               <p className="text-sm">Orders</p>
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs">5 orders baru</span>
+                <span className="text-xs">0 orders baru</span>
                 <span className="text-xs">📦</span>
               </div>
             </div>

@@ -9,6 +9,8 @@ interface Props {
     id: string;
     name: string;
   };
+  disabled?: boolean;
+  className?: string;
 }
 
 export default function Button({ id, name, image, price, category }: Props) {
@@ -22,13 +24,17 @@ export default function Button({ id, name, image, price, category }: Props) {
   };
 
   return (
-    <button
-      onClick={handleAddToCart}
-      className={`px-4 py-2 rounded-lg transition-all ${
-        isInCart ? "bg-green-500 text-white" : "bg-[#3533A1] text-white"
-      }`}
-    >
-      {isInCart ? `Di Keranjang (${itemInCart?.quantity})` : "Tambah"}
-    </button>
+    <div className="mt-auto">
+      <button
+        onClick={handleAddToCart}
+        className={`w-full px-4 py-3 rounded-b-lg transition-all ${
+          isInCart
+            ? "bg-green-500 text-white"
+            : "hover:bg-blue-900 bg-[#3533A1] text-white"
+        }`}
+      >
+        {isInCart ? `Di Keranjang (${itemInCart?.quantity})` : "Tambah"}
+      </button>
+    </div>
   );
 }

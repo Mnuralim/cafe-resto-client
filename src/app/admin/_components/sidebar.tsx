@@ -4,6 +4,7 @@ import {
   FaChartLine,
   FaChair,
   FaClipboardList,
+  FaSignOutAlt,
   FaUser,
   FaTimes,
   FaUtensils,
@@ -34,9 +35,9 @@ const navItems = [
     path: "/admin/orders",
   },
   {
-    title: "Akun",
-    icon: <FaUser />,
-    path: "/admin/account",
+    title: "Logout",
+    icon: <FaSignOutAlt />,
+    path: "/admin/login",
   },
 ];
 

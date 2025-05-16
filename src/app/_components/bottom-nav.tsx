@@ -21,11 +21,6 @@ const navItems = [
     icon: <FaShoppingCart />,
     path: "/cart",
   },
-  // {
-  //   title: "Status",
-  //   icon: <FaBoxOpen />,
-  //   path: "/status",
-  // },
 
   {
     title: "Riwayat",
@@ -42,7 +37,7 @@ export const BottomNav = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-sm">
+    <div className="fixed bottom-0 z-50 left-0 right-0 bg-white border-t border-gray-200 shadow-sm">
       <div className="flex justify-around max-w-3xl mx-auto  items-center p-2">
         {navItems.map((item) => (
           <PreserveLink
