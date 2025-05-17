@@ -10,7 +10,7 @@ export default function BerandaPage() {
 
   // Fungsi untuk menangani klik tombol "Mulai Pesan"
   const handleMulaiPesan = () => {
-    router.push("/pelanggan/menu"); // Arahkan ke halaman menu
+    router.push("menu"); // Arahkan ke halaman menu
   };
 
   return (
@@ -33,13 +33,12 @@ export default function BerandaPage() {
           <h1 className="text-3xl font-bold text-white mb-4">
             Hai, selamat datang
           </h1>
-          <h2 className="text-2xl text-white mb-6">di Coffee & Resto</h2>
+          <h2 className="text-2xl text-white mb-6">di Kafe Coffee & Resto</h2>
         </div>
 
         {/* Bagian Tombol */}
         <div className="flex-1 flex items-center justify-center">
           <Button onClick={handleMulaiPesan} />{" "}
-          {/* Tombol dengan onClick handler */}
         </div>
       </div>
     </div>

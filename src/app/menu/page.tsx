@@ -1,5 +1,6 @@
 import { getAllCategories, getAllMenus } from "@/lib/api";
 import { MenuList } from "./_components/menu-list";
+import { BottomNav } from "../_components/bottom-nav";
 
 interface Props {
   searchParams: Promise<{
@@ -26,6 +27,7 @@ async function MenuPage({ searchParams }: Props) {
         categories={categories}
         activeCategory={category}
       />
+      <BottomNav />
     </div>
   );
 }
