@@ -106,3 +106,31 @@ interface CartState {
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
+
+interface ISalesReport {
+  id: string;
+  date: string;
+  total_items_sold: number;
+  income: number;
+  admin_id: string;
+  created_at: string;
+  updated_at: string;
+  orders: IOrder[];
+  admin: {
+    username: string;
+  };
+}
+
+interface IStats {
+  completedOrders: number;
+  completedOrdersChangePercentage: number;
+  ordersChangePercentage: number;
+  processingOrders: number;
+  salesChangePercentage: number;
+  totalOrders: number;
+  totalSales: number;
+}
+
+interface IWeeklySales {
+  [day: string]: number;
+}

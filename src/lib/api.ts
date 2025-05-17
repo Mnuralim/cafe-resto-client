@@ -286,3 +286,48 @@ export const readNotification = async (notificationId: string) => {
 
   return response;
 };
+
+export const getReports = async () => {
+  const response = await fetch(`${API_URL}/reports`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch reports");
+  }
+
+  const resJson = await response.json();
+  const data: ISalesReport[] = resJson.data;
+  return data;
+};
+
+export const getStats = async () => {
+  const response = await fetch(`${API_URL}/stats`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch stats");
+  }
+
+  const resJson = await response.json();
+  const data: IStats = resJson.data;
+  return data;
+};
+
+export const getWeeklySales = async () => {
+  const response = await fetch(`${API_URL}/stats/weekly-sales`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch weekly sales");
+  }
+
+  const resJson = await response.json();
+  const data: IWeeklySales[] = resJson.data;
+  return data;
+};
