@@ -347,14 +347,7 @@ export const NotificationList = ({ token }: Props) => {
               >
                 Lihat semua
               </div>
-              {unreadCount > 0 && (
-                <div
-                  className="text-center py-3 text-sm text-blue-600 hover:underline cursor-pointer flex-1"
-                  onClick={handleMarkAllAsRead}
-                >
-                  Tandai sudah dibaca
-                </div>
-              )}
+              {unreadCount > 0 && <div></div>}
             </div>
           </>
         )}

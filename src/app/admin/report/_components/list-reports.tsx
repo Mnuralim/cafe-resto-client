@@ -15,44 +15,6 @@ export const ListReports = ({ data }: Props) => {
     contentRef: printRef,
     documentTitle: "Laporan-Penjualan",
   });
-  // const renderOrderCard = (order: ISalesReport) => (
-  //   <div key={order.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
-  //     <div className="flex justify-between items-center mb-3">
-  //       <span className="font-semibold text-sm text-gray-600">
-  //         ID: {order.id}
-  //       </span>
-  //     </div>
-
-  //     <h3 className="font-bold text-lg mb-2">{order.customer_name}</h3>
-
-  //     <div className="grid grid-cols-2 gap-2 mb-4 text-sm">
-  //       <div>
-  //         <p className="text-gray-500">Meja</p>
-  //         <p className="font-medium">Meja {order.table.number}</p>
-  //       </div>
-  //       <div>
-  //         <p className="text-gray-500">Total</p>
-  //         <p className="font-medium">{formatCurrency(order.total_price)}</p>
-  //       </div>
-  //       <div>
-  //         <p className="text-gray-500">Waktu</p>
-  //         <p className="font-medium">{formatDate(order.created_at)}</p>
-  //       </div>
-  //       <div>
-  //         <p className="text-gray-500">Jumlah Item</p>
-  //         <p className="font-medium">{order.orderItems.length} item</p>
-  //       </div>
-  //     </div>
-
-  //     <Link
-  //       href={`/admin/orders/${order.id}`}
-  //       className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center justify-center w-full"
-  //     >
-  //       <FaEye className="mr-2" />
-  //       Lihat Detail
-  //     </Link>
-  //   </div>
-  // );
 
   return (
     <div className="flex-1 w-full">
