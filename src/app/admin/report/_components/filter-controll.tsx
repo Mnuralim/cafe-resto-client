@@ -10,6 +10,7 @@ interface Props {
 export const FilterControl = ({ currentSortReport }: Props) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isDateExpanded, setIsDateExpanded] = useState(false);
   const { replace } = useRouter();
   const searchParams = useSearchParams();
 
@@ -25,6 +26,7 @@ export const FilterControl = ({ currentSortReport }: Props) => {
       scroll: false,
     });
   };
+
   const handleSortReport = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sortReport", currentSortReport === "asc" ? "desc" : "asc");
@@ -50,86 +52,100 @@ export const FilterControl = ({ currentSortReport }: Props) => {
       scroll: false,
     });
   };
+
   return (
-    <div className="mb-6 space-y-4">
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4 flex-1">
-          <div className="flex items-center mb-2">
-            <BiCalendar className="w-5 h-5 mr-2" />
-            <h3 className="font-bold">Rentang Tanggal</h3>
+    <div className="mb-4">
+      {/* Main Controls Bar */}
+      <div className="flex flex-wrap items-center gap-3">
+        {/* Date Toggle Button */}
+        <button
+          onClick={() => setIsDateExpanded(!isDateExpanded)}
+          className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg py-2 px-3 shadow-sm hover:bg-gray-50 transition-colors"
+        >
+          <BiCalendar className="w-4 h-4 text-indigo-600" />
+          <span className="text-sm font-medium">Rentang Tanggal</span>
+          <BiChevronDown
+            className={`w-4 h-4 text-gray-500 transition-transform ${
+              isDateExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {/* Sort Controls - Always Visible */}
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <select
+              onChange={handleSortBy}
+              className="border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white shadow-sm"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <BiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex flex-col flex-1">
-              <label className="text-sm font-medium mb-1">Dari Tanggal</label>
+
+          <button
+            onClick={handleSortReport}
+            className="bg-white border border-gray-200 hover:bg-gray-50 rounded-lg p-2 transition-colors shadow-sm"
+            aria-label="Toggle sort direction"
+          >
+            {currentSortReport === "asc" ? (
+              <GoSortAsc className="w-4 h-4 text-indigo-600" />
+            ) : (
+              <GoSortDesc className="w-4 h-4 text-indigo-600" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Expandable Date Filter */}
+      {isDateExpanded && (
+        <div className="mt-2 bg-white rounded-lg shadow-sm border border-gray-200 p-3 transition-all">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex-grow min-w-[150px]">
+              <label className="block text-xs font-medium text-gray-500 mb-1">
+                Dari Tanggal
+              </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="border-2 border-neutral-700 p-2 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 rounded-lg py-1.5 px-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
-            <div className="flex flex-col flex-1">
-              <label className="text-sm font-medium mb-1">Sampai Tanggal</label>
+
+            <div className="flex-grow min-w-[150px]">
+              <label className="block text-xs font-medium text-gray-500 mb-1">
+                Sampai Tanggal
+              </label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="border-2 border-neutral-700 p-2 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 rounded-lg py-1.5 px-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>
-            <div className="self-end flex items-center gap-2">
+
+            <div className="flex gap-2">
               <button
                 onClick={handleDateFilter}
-                className="bg-indigo-600 text-white border-4 border-neutral-700 px-6 py-2 font-bold hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
+                className="bg-[#6A67CE] hover:bg-indigo-700 text-white py-1.5 px-3 rounded-lg text-sm font-medium transition-colors"
               >
                 Terapkan
               </button>
               <button
                 onClick={handleReset}
-                className="bg-red-600 text-white border-4 border-neutral-700 px-6 py-2 font-bold hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 px-3 rounded-lg text-sm transition-colors"
               >
                 Reset
               </button>
             </div>
           </div>
         </div>
-
-        <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4 flex-1 md:flex-initial md:w-72">
-          <div className="flex items-center mb-2">
-            {currentSortReport === "asc" ? (
-              <GoSortAsc className="w-5 h-5 mr-2" />
-            ) : (
-              <GoSortDesc className="w-5 h-5 mr-2" />
-            )}
-            <h3 className="font-bold">Urutkan</h3>
-          </div>
-          <div className="flex gap-3">
-            <div className="relative flex-1">
-              <select
-                onChange={handleSortBy}
-                className="w-full appearance-none border-2 border-neutral-700 p-2 pr-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <BiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none" />
-            </div>
-            <button
-              onClick={handleSortReport}
-              className="bg-neutral-200 border-2 border-neutral-700 p-2 rounded-none hover:bg-neutral-300 transition-colors"
-            >
-              {currentSortReport === "asc" ? (
-                <GoSortAsc className="w-5 h-5" />
-              ) : (
-                <GoSortDesc className="w-5 h-5" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

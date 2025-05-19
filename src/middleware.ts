@@ -28,6 +28,7 @@ export default async function middleware(req: NextRequest) {
     }
   }
   const session = await decrypt(cookie);
+
   if (isProtectedRoute && !session?.id) {
     return NextResponse.redirect(new URL("/admin/login", req.nextUrl));
   }

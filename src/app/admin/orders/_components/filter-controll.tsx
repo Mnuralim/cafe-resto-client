@@ -11,6 +11,7 @@ interface FilterControlProps {
 export const FilterControll = ({ currentSortOrder }: FilterControlProps) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const { replace } = useRouter();
   const searchParams = useSearchParams();
 
@@ -32,80 +33,64 @@ export const FilterControll = ({ currentSortOrder }: FilterControlProps) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newParams = new URLSearchParams(searchParams);
       newParams.set("searchQuery", e.target.value);
-      replace(`/admin/orders?${newParams.toString()}`, {
-        scroll: false,
-      });
+      replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
     },
     500
   );
 
   const handleFilterStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams);
-    if (e.target.value === "ALL") {
-      newParams.delete("status");
-    } else {
-      newParams.set("status", e.target.value);
-    }
-    replace(`/admin/orders?${newParams.toString()}`, {
-      scroll: false,
-    });
+    e.target.value === "ALL"
+      ? newParams.delete("status")
+      : newParams.set("status", e.target.value);
+    replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
   };
 
   const handleSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sortBy", e.target.value);
-    replace(`/admin/orders?${newParams.toString()}`, {
-      scroll: false,
-    });
+    replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
   };
 
   const handleSortOrder = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sortOrder", currentSortOrder === "asc" ? "desc" : "asc");
-    replace(`/admin/orders?${newParams.toString()}`, {
-      scroll: false,
-    });
+    replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
   };
 
   const handleDateFilter = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("startDate", startDate);
     newParams.set("endDate", endDate);
-    replace(`/admin/orders?${newParams.toString()}`, {
-      scroll: false,
-    });
+    replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
   };
 
   const handleReset = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.delete("startDate");
     newParams.delete("endDate");
-    replace(`/admin/orders?${newParams.toString()}`, {
-      scroll: false,
-    });
+    replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
   };
 
   return (
-    <div className="mb-6 space-y-4">
-      <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4">
-        <div className="flex items-center mb-2">
-          <BiSearch className="w-5 h-5 mr-2" />
-          <h3 className="font-bold">Pencarian & Filter Status</h3>
+    <div className="mb-4">
+      {/* Main Search Bar and Filters Toggle */}
+      <div className="flex flex-wrap gap-2 items-center mb-2">
+        <div className="relative flex-grow max-w-md">
+          <input
+            type="text"
+            onChange={handleSearch}
+            placeholder="Cari pesanan..."
+            className="w-full border border-gray-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
+          />
+          <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              onChange={handleSearch}
-              placeholder="Cari kode pesanan atau nama pemesan..."
-              className="w-full border-2 border-neutral-700 p-2 pl-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
-          </div>
-          <div className="relative w-full sm:w-64">
+
+        <div className="flex items-center gap-1">
+          <div className="relative">
             <select
               onChange={handleFilterStatus}
-              className="w-full appearance-none border-2 border-neutral-700 p-2 pr-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white shadow-sm"
             >
               {statusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -113,67 +98,14 @@ export const FilterControll = ({ currentSortOrder }: FilterControlProps) => {
                 </option>
               ))}
             </select>
-            <BiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none" />
+            <BiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>
-        </div>
-      </div>
 
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4 flex-1">
-          <div className="flex items-center mb-2">
-            <BiCalendar className="w-5 h-5 mr-2" />
-            <h3 className="font-bold">Rentang Tanggal</h3>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex flex-col flex-1">
-              <label className="text-sm font-medium mb-1">Dari Tanggal</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="border-2 border-neutral-700 p-2 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="flex flex-col flex-1">
-              <label className="text-sm font-medium mb-1">Sampai Tanggal</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="border-2 border-neutral-700 p-2 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-            <div className="self-end flex items-center gap-2">
-              <button
-                onClick={handleDateFilter}
-                className="bg-indigo-600 text-white border-4 border-neutral-700 px-6 py-2 font-bold hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
-              >
-                Terapkan
-              </button>
-              <button
-                onClick={handleReset}
-                className="bg-red-600 text-white border-4 border-neutral-700 px-6 py-2 font-bold hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
-              >
-                Reset
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4 flex-1 md:flex-initial md:w-72">
-          <div className="flex items-center mb-2">
-            {currentSortOrder === "asc" ? (
-              <GoSortAsc className="w-5 h-5 mr-2" />
-            ) : (
-              <GoSortDesc className="w-5 h-5 mr-2" />
-            )}
-            <h3 className="font-bold">Urutkan</h3>
-          </div>
-          <div className="flex gap-3">
-            <div className="relative flex-1">
+          <div className="flex items-center gap-1">
+            <div className="relative">
               <select
                 onChange={handleSortBy}
-                className="w-full appearance-none border-2 border-neutral-700 p-2 pr-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white shadow-sm"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -181,21 +113,80 @@ export const FilterControll = ({ currentSortOrder }: FilterControlProps) => {
                   </option>
                 ))}
               </select>
-              <BiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none" />
+              <BiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
             </div>
+
             <button
               onClick={handleSortOrder}
-              className="bg-neutral-200 border-2 border-neutral-700 p-2 rounded-none hover:bg-neutral-300 transition-colors"
+              className="bg-white border border-gray-200 hover:bg-gray-50 rounded-lg p-2 transition-colors shadow-sm"
+              aria-label="Toggle sort direction"
             >
               {currentSortOrder === "asc" ? (
-                <GoSortAsc className="w-5 h-5" />
+                <GoSortAsc className="w-4 h-4 text-gray-600" />
               ) : (
-                <GoSortDesc className="w-5 h-5" />
+                <GoSortDesc className="w-4 h-4 text-gray-600" />
               )}
             </button>
           </div>
+
+          <button
+            onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+            className="bg-white border border-gray-200 hover:bg-gray-50 rounded-lg p-2 transition-colors flex items-center gap-1 shadow-sm"
+          >
+            <BiCalendar className="w-4 h-4 text-gray-600" />
+            <span className="text-sm font-medium">Tanggal</span>
+            <BiChevronDown
+              className={`w-4 h-4 text-gray-500 transition-transform ${
+                isFiltersOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
         </div>
       </div>
+
+      {/* Date Filter Section - Collapsible */}
+      {isFiltersOpen && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 mt-2 flex flex-wrap items-end gap-3">
+          <div className="flex-grow min-w-[150px]">
+            <label className="block text-xs font-medium text-gray-500 mb-1">
+              Dari Tanggal
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg py-1.5 px-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="flex-grow min-w-[150px]">
+            <label className="block text-xs font-medium text-gray-500 mb-1">
+              Sampai Tanggal
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg py-1.5 px-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handleDateFilter}
+              className="bg-[#3533A1] hover:bg-indigo-700 text-white py-1.5 px-3 rounded-lg text-sm font-medium transition-colors"
+            >
+              Terapkan
+            </button>
+            <button
+              onClick={handleReset}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 px-3 rounded-lg text-sm transition-colors"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

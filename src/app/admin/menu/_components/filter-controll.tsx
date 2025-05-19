@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BiChevronDown, BiSearch } from "react-icons/bi";
+import { BiChevronDown, BiSearch, BiFilterAlt } from "react-icons/bi";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
 }
 
 export const FilterControll = ({ currentSortMenu, categories }: Props) => {
+  const [isFilterExpanded, setIsFilterExpanded] = useState(false);
   const { replace } = useRouter();
   const searchParams = useSearchParams();
 
@@ -23,119 +24,117 @@ export const FilterControll = ({ currentSortMenu, categories }: Props) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newParams = new URLSearchParams(searchParams);
       newParams.set("search", e.target.value);
-      replace(`/admin/menu?${newParams.toString()}`, {
-        scroll: false,
-      });
+      replace(`/admin/menu?${newParams.toString()}`, { scroll: false });
     },
     500
   );
 
   const handleFilterCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams);
-    if (e.target.value === "ALL") {
-      newParams.delete("category");
-    } else {
-      newParams.set("category", e.target.value);
-    }
-    replace(`/admin/menu?${newParams.toString()}`, {
-      scroll: false,
-    });
+    e.target.value === "ALL"
+      ? newParams.delete("category")
+      : newParams.set("category", e.target.value);
+    replace(`/admin/menu?${newParams.toString()}`, { scroll: false });
   };
 
   const handleSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sortBy", e.target.value);
-    replace(`/admin/menu?${newParams.toString()}`, {
-      scroll: false,
-    });
+    replace(`/admin/menu?${newParams.toString()}`, { scroll: false });
   };
 
   const handleSortReport = () => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sortMenu", currentSortMenu === "asc" ? "desc" : "asc");
-    replace(`/admin/menu?${newParams.toString()}`, {
-      scroll: false,
-    });
+    replace(`/admin/menu?${newParams.toString()}`, { scroll: false });
+  };
+
+  const toggleFilters = () => {
+    setIsFilterExpanded(!isFilterExpanded);
   };
 
   return (
-    <div className="mb-6 space-y-4">
-      <div className="bg-neutral-50 border-4 border-neutral-700  rounded-none p-4">
-        <div className="flex items-center mb-2">
-          <BiSearch className="w-5 h-5 mr-2" />
-          <h3 className="font-bold">Pencarian</h3>
-        </div>
-        <div className="relative flex-1">
+    <div className="mb-4">
+      {/* Main Compact Bar */}
+      <div className="flex flex-wrap items-center gap-2 mb-2">
+        {/* Search Bar */}
+        <div className="relative flex-grow max-w-md">
           <input
             type="text"
             onChange={handleSearch}
             placeholder="Cari menu..."
-            className="w-full border-2 border-neutral-700 p-2 pl-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-200 rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 bg-white shadow-sm"
           />
-          <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4 flex-1">
-          <div className="flex items-center mb-2">
-            <BiChevronDown className="w-5 h-5 mr-2" />
-            <h3 className="font-bold">Filter</h3>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <label className="text-sm font-medium mb-1 block">Kategori</label>
-              <select
-                onChange={handleFilterCategory}
-                className="w-full appearance-none border-2 border-neutral-700 p-2 pr-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                {categories.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-              <BiChevronDown className="absolute right-3 top-[calc(50%+0.5rem)] transform -translate-y-1/2 w-5 h-5 pointer-events-none" />
-            </div>
-          </div>
+          <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
         </div>
 
-        <div className="bg-neutral-50 border-4 border-neutral-700 rounded-none p-4 flex-1 md:flex-initial ">
-          <div className="flex items-center mb-2">
-            {currentSortMenu === "asc" ? (
-              <GoSortAsc className="w-5 h-5 mr-2" />
-            ) : (
-              <GoSortDesc className="w-5 h-5 mr-2" />
-            )}
-            <h3 className="font-bold">Urutkan</h3>
-          </div>
-          <div className="flex gap-3">
-            <div className="relative flex-1">
-              <select
-                onChange={handleSortBy}
-                className="w-full appearance-none border-2 border-neutral-700 p-2 pr-10 rounded-none focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <BiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none" />
-            </div>
-            <button
-              onClick={handleSortReport}
-              className="bg-neutral-200 border-2 border-neutral-700 p-2 rounded-none hover:bg-neutral-300 transition-colors"
+        {/* Toggle Filter Button */}
+        <button
+          onClick={toggleFilters}
+          className="flex items-center gap-1 px-3 py-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+        >
+          <BiFilterAlt className="w-4 h-4 text-indigo-500" />
+          <span className="text-sm font-medium">Filter</span>
+          <BiChevronDown
+            className={`w-4 h-4 text-gray-500 transition-transform ${
+              isFilterExpanded ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        {/* Always visible sort controls */}
+        <div className="flex items-center">
+          <div className="relative mr-1">
+            <select
+              onChange={handleSortBy}
+              className="border border-gray-200 rounded-lg py-2 pl-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none bg-white shadow-sm"
             >
-              {currentSortMenu === "asc" ? (
-                <GoSortAsc className="w-5 h-5" />
-              ) : (
-                <GoSortDesc className="w-5 h-5" />
-              )}
-            </button>
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <BiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           </div>
+
+          <button
+            onClick={handleSortReport}
+            className="bg-white border border-gray-200 hover:bg-gray-50 rounded-lg p-2 transition-colors shadow-sm"
+            aria-label="Toggle sort direction"
+          >
+            {currentSortMenu === "asc" ? (
+              <GoSortAsc className="w-4 h-4 text-amber-600" />
+            ) : (
+              <GoSortDesc className="w-4 h-4 text-amber-600" />
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Expandable Filter Section */}
+      {isFilterExpanded && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 mb-3 transition-all">
+          <div className="flex items-center mb-2">
+            <BiChevronDown className="w-4 h-4 text-purple-600 mr-1" />
+            <h3 className="text-sm font-medium text-gray-700">Kategori</h3>
+          </div>
+          <div className="relative">
+            <select
+              onChange={handleFilterCategory}
+              className="w-full border border-gray-200 rounded-lg py-2 px-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 appearance-none"
+            >
+              <option value="ALL">Semua Kategori</option>
+              {categories.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+            <BiChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
