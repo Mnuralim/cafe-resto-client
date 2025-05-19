@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Sidebar from "./_components/sidebar";
 import Navbar from "./_components/navbar";
 import { Breadcrumb } from "./_components/bread-crumb";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { getAdmin } from "@/action";
 
 export const metadata: Metadata = {
   title: "Coffee & Resto | Admin",
@@ -16,15 +17,28 @@ export default async function AdminLayout({
 }>) {
   const cookieStore = cookies();
   const token = (await cookieStore).get("token")?.value;
+  const headersList = headers();
+  const path =
+    (await headersList).get("x-pathname") || (await headersList).get("x-url");
+  const isLoginPage = path?.includes("/admin/login");
+
+  let admin = null;
+  if (!isLoginPage) {
+    admin = await getAdmin();
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 bg-gradient-to-r from-gray-50 to-gray-100 text-black">
-      <div className="flex flex-col lg:flex-row">
-        <Sidebar />
-        <div className="w-full">
-          <Navbar token={token!} />
+      <Sidebar username={admin?.username} />
+      <div
+        className={`min-h-screen flex-1 flex flex-col transition-all duration-300
+        lg:pl-72`}
+      >
+        <Navbar token={token!} username={admin?.username} />
+        <main className="p-4 md:p-6 flex-1">
           <Breadcrumb />
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

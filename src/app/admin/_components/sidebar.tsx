@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   FaChartLine,
   FaChair,
@@ -10,148 +10,215 @@ import {
   FaBars,
   FaFileAlt,
   FaExclamationTriangle,
+  FaUser,
 } from "react-icons/fa";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { logOut } from "@/action";
 
 const navItems = [
   {
     title: "Dashboard",
-    icon: <FaChartLine className="text-lg" />,
+    icon: <FaChartLine className="w-5 h-5" />,
     path: "/admin",
   },
   {
     title: "Meja",
-    icon: <FaChair className="text-lg" />,
+    icon: <FaChair className="w-5 h-5" />,
     path: "/admin/table",
   },
   {
     title: "Menu",
-    icon: <FaUtensils className="text-lg" />,
+    icon: <FaUtensils className="w-5 h-5" />,
     path: "/admin/menu",
   },
   {
     title: "Pesanan",
-    icon: <FaClipboardList className="text-lg" />,
+    icon: <FaClipboardList className="w-5 h-5" />,
     path: "/admin/orders",
   },
   {
     title: "Laporan",
-    icon: <FaFileAlt className="text-lg" />,
+    icon: <FaFileAlt className="w-5 h-5" />,
     path: "/admin/report",
-  },
-  {
-    title: "Logout",
-    icon: <FaSignOutAlt className="text-lg" />,
-    path: "#",
   },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ username = "Admin" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        window.innerWidth < 1024 &&
+        isOpen
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, isMounted]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const handleLogoutClick = (e: React.MouseEvent, path: string) => {
-    if (path === "#") {
-      e.preventDefault();
-      setShowLogoutModal(true);
+
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 1024) {
+      setIsOpen(false);
     }
   };
 
   const handleLogout = () => {
-    // Add your actual logout logic here
-    console.log("Logging out...");
-    router.push("/admin/login");
+    setShowLogoutModal(false);
+    logOut();
   };
 
   if (pathname === "/admin/login") return null;
-
+  if (!isMounted) return null;
   return (
     <>
-      {/* Mobile Toggle Button */}
-      <div className="block lg:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={toggleSidebar}
-          className="p-3 rounded-xl bg-indigo-800 text-white hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg"
-          aria-label="Toggle sidebar"
-        >
-          {isOpen ? (
-            <FaTimes className="text-xl" />
-          ) : (
-            <FaBars className="text-xl" />
-          )}
-        </button>
-      </div>
-
-      {/* Sidebar */}
-      <div
-        ref={sidebarRef}
-        className={`fixed inset-y-0 left-0 z-40 w-72 bg-gradient-to-b from-indigo-900 to-indigo-800 text-white shadow-2xl transform transition-all duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-          lg:translate-x-0 lg:static lg:w-64`}
+      <button
+        onClick={toggleSidebar}
+        className="fixed top-3.5 left-4 p-2 rounded-md bg-indigo-800 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all z-30 lg:hidden"
+        aria-label="Toggle sidebar"
       >
-        <div className="p-6 flex justify-between items-center  border-b border-[#3533A1]">
-          <h1 className="text-2xl font-bold">Coffee & Resto</h1>
-        </div>
+        {isOpen ? (
+          <FaTimes className="w-5 h-5" />
+        ) : (
+          <FaBars className="w-5 h-5" />
+        )}
+      </button>
 
-        <nav className="mt-6 px-4">
-          <ul className="space-y-3">
-            {navItems.map((item, index) => (
-              <li key={index}>
-                {item.title === "Logout" ? (
-                  <button
-                    onClick={(e) => handleLogoutClick(e, item.path)}
-                    className="w-full flex items-center p-4 rounded-xl transition-all duration-300 hover:bg-[#6A67CE] hover:shadow-lg group"
-                  >
-                    <span className="text-red-300 group-hover:text-red-350">
-                      {item.icon}
-                    </span>
-                    <span className="ml-4 text-red-300 group-hover:text-red-350 font-medium">
-                      {item.title}
-                    </span>
-                  </button>
+      {isOpen && (
+        <div
+          className="fixed inset-0 backdrop-blur-sm bg-black/50 z-20 lg:hidden"
+          onClick={toggleSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        ref={sidebarRef}
+        className={`
+          fixed left-0 top-0 h-full z-30
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          transition-transform duration-300 ease-in-out
+          w-72 bg-gradient-to-b from-indigo-900 to-indigo-800 text-white
+          shadow-lg
+          ${pathname === "/admin/login" ? "hidden" : ""}
+        `}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between h-16 px-6 border-b border-[#3533A1]">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-white">Coffee & Resto</h1>
+            </div>
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 rounded-md hover:bg-indigo-700 lg:hidden"
+              aria-label="Close sidebar"
+            >
+              <FaTimes className="w-5 h-5 text-white" />
+            </button>
+          </div>
+
+          <div className="flex-1 pt-5 pb-4 overflow-y-auto">
+            <nav className="px-3">
+              <ul className="space-y-2">
+                {navItems.map((item, index) => {
+                  const isActive = pathname === item.path;
+                  return (
+                    <li key={index}>
+                      <Link
+                        href={item.path}
+                        className={`flex items-center px-4 py-3 text-sm rounded-xl transition-all 
+                          ${
+                            isActive
+                              ? "bg-[#6A67CE] text-cyan-300 font-medium shadow-md"
+                              : "text-white hover:bg-[#6A67CE] hover:shadow-md"
+                          }`}
+                        onClick={closeSidebarOnMobile}
+                      >
+                        <span
+                          className={`flex-shrink-0 ${
+                            isActive ? "text-cyan-300" : "text-white"
+                          }`}
+                        >
+                          {item.icon}
+                        </span>
+                        <span className="ml-3 font-medium">{item.title}</span>
+                        {isActive && (
+                          <span className="ml-auto w-1 h-6 bg-cyan-300" />
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+
+          <div className="p-4 mt-auto border-t border-indigo-700">
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-md bg-indigo-600 flex-shrink-0 flex items-center justify-center text-white font-bold">
+                {username ? (
+                  username.charAt(0).toUpperCase()
                 ) : (
-                  <Link
-                    href={item.path}
-                    className={`flex items-center p-4 rounded-xl transition-all duration-300 ${
-                      pathname === item.path
-                        ? "bg-[#6A67CE] font-medium shadow-md"
-                        : "hover:bg-[#6A67CE] hover:shadow-md"
-                    }`}
-                    onClick={() => {
-                      if (window.innerWidth < 1024) {
-                        setIsOpen(false);
-                      }
-                    }}
-                  >
-                    <span
-                      className={
-                        pathname === item.path ? "text-cyan-300" : "text-white"
-                      }
-                    >
-                      {item.icon}
-                    </span>
-                    <span className="ml-4">{item.title}</span>
-                  </Link>
+                  <FaUser className="w-5 h-5" />
                 )}
-              </li>
-            ))}
-          </ul>
-        </nav>
+              </div>
+              <div className="ml-3 flex-1 overflow-hidden">
+                <p className="text-sm font-bold text-white truncate">
+                  {username}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowLogoutModal(true)}
+                className="p-2 cursor-pointer bg-red-700 hover:bg-red-600 rounded-md text-white"
+                title="Logout"
+              >
+                <FaSignOutAlt className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
 
-        {/* Sidebar Footer */}
-        <div className="absolute bottom-0 w-full p-4 border-t border-indigo-700">
-          <div className="text-center text-indigo-300 text-sm">
+          <div className="text-center text-indigo-300 text-sm p-2 border-t border-indigo-700">
             Coffee & Resto © {new Date().getFullYear()}
           </div>
         </div>
-      </div>
+      </aside>
 
-      {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/50">
           <div className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-md transform transition-all duration-300 scale-95 animate-fadeIn">
@@ -183,31 +250,6 @@ const Sidebar = () => {
           </div>
         </div>
       )}
-
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 backdrop-blur-sm bg-black/50 z-30 lg:hidden"
-          onClick={toggleSidebar}
-        />
-      )}
-
-      {/* Add these styles to your global CSS */}
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out forwards;
-        }
-      `}</style>
     </>
   );
 };

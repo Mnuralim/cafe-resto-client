@@ -3,12 +3,7 @@
 import { usePathname } from "next/navigation";
 import React from "react";
 import { PreserveLink } from "./preserver-link";
-import {
-  // FaBoxOpen,
-  FaHistory,
-  FaShoppingCart,
-  FaUtensils,
-} from "react-icons/fa";
+import { FaHistory, FaShoppingCart, FaUtensils } from "react-icons/fa";
 
 const navItems = [
   {
@@ -32,7 +27,7 @@ const navItems = [
 export const BottomNav = () => {
   const pathname = usePathname();
 
-  if (pathname.startsWith("/admin")) {
+  if (pathname === "/" || pathname.startsWith("/admin")) {
     return null;
   }
 

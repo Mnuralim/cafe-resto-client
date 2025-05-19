@@ -3,12 +3,16 @@ import React from "react";
 import { FaEye, FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { FilterControll } from "./filter-controll";
+import { Pagination } from "../../_components/pagination";
 
 interface Props {
-  data: IOrder[];
+  data: OrderApiResponse;
+  currentSortOrder?: string;
+  currentLimit?: string;
 }
 
-export const ListOrder = ({ data }: Props) => {
+export const ListOrder = ({ data, currentLimit, currentSortOrder }: Props) => {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "COMPLETED":
@@ -102,7 +106,11 @@ export const ListOrder = ({ data }: Props) => {
           </div>
         </div>
 
-        <div className="md:hidden space-y-4">{data.map(renderOrderCard)}</div>
+        <FilterControll currentSortOrder={currentSortOrder} />
+
+        <div className="md:hidden space-y-4">
+          {data.data.map(renderOrderCard)}
+        </div>
 
         <div className="hidden md:block bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
@@ -124,7 +132,7 @@ export const ListOrder = ({ data }: Props) => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((order) => (
+                {data.data.map((order) => (
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 md:px-6 py-4 text-sm">{order.id}</td>
                     <td className="px-4 md:px-6 py-4">{order.customer_name}</td>
@@ -165,7 +173,9 @@ export const ListOrder = ({ data }: Props) => {
           </div>
         </div>
 
-        {data.length === 0 && (
+        <Pagination meta={data.meta} currentLimit={currentLimit} />
+
+        {data.data.length === 0 && (
           <div className="bg-white rounded-lg shadow-md p-8 text-center">
             <p className="text-gray-500 text-lg">
               Belum ada pesanan yang masuk

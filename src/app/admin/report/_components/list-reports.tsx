@@ -3,12 +3,14 @@ import React, { useRef } from "react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { useReactToPrint } from "react-to-print";
 import PrintableReport from "./pdf-report";
+import { FilterControl } from "./filter-controll";
 
 interface Props {
   data: ISalesReport[];
+  currentSortReport?: string;
 }
 
-export const ListReports = ({ data }: Props) => {
+export const ListReports = ({ data, currentSortReport }: Props) => {
   const printRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
@@ -33,6 +35,8 @@ export const ListReports = ({ data }: Props) => {
         <div style={{ display: "none" }}>
           <PrintableReport ref={printRef} reports={data} />
         </div>
+
+        <FilterControl currentSortReport={currentSortReport} />
 
         {/* <div className="md:hidden space-y-4">{data.map(renderOrderCard)}</div> */}
 

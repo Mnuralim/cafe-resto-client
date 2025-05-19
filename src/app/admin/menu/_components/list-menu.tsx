@@ -7,13 +7,15 @@ import { createMenu, deleteMenu, updateMenu } from "@/lib/api";
 import Swal from "sweetalert2";
 import { customRevaldation } from "@/action";
 import Image from "next/image";
+import { FilterControll } from "./filter-controll";
 
 interface Props {
   data: MenuApiResponse;
   categories: ICategory[];
+  currentSortMenu?: string;
 }
 
-export const ListMenu = ({ data, categories }: Props) => {
+export const ListMenu = ({ data, categories, currentSortMenu }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -229,6 +231,11 @@ export const ListMenu = ({ data, categories }: Props) => {
           <FaPlus className="mr-2" /> Tambah Menu
         </button>
       </div>
+
+      <FilterControll
+        categories={categories}
+        currentSortMenu={currentSortMenu}
+      />
 
       {/* Mobile view (cards) */}
       <div className="md:hidden">

@@ -15,7 +15,7 @@ interface Filters {
   category: string;
 }
 
-interface Meta {
+interface MenuMeta {
   totalMenus: number;
   totalPages: number;
   currentPage: number;
@@ -29,7 +29,32 @@ interface MenuApiResponse {
   status: string;
   message: string;
   data: IMenu[];
-  meta: Meta;
+  meta: MenuMeta;
+}
+
+interface OrderMeta {
+  totalOrders: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  filters: {
+    search?: string;
+    sortBy?: string;
+    sortOrder?: string;
+    tableId?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+  };
+}
+
+interface OrderApiResponse {
+  status: string;
+  message: string;
+  data: IOrder[];
+  meta: OrderMeta;
 }
 
 interface ICategory {

@@ -1,28 +1,46 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { decrypt } from "./action";
 
-export async function middleware(req: Request) {
-  const cookieStore = cookies();
-  const token = (await cookieStore).get("token")?.value;
+const protectedRoutes = [
+  "/admin",
+  "/admin/table",
+  "/admin/menu",
+  "/admin/orders",
+  "/admin/report",
+];
+const publicRoutes = ["/admin/login"];
 
-  if (!token) {
-    console.log("Middleware denied, user is not authenticated");
-    return NextResponse.redirect(new URL("/admin/login", req.url));
+export default async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname;
+  const isProtectedRoute = protectedRoutes.includes(path);
+  const isPublicRoute = publicRoutes.includes(path);
+
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-pathname", path);
+  requestHeaders.set("x-url", req.nextUrl.href);
+
+  const cookie = (await cookies()).get("token")?.value;
+
+  if (!cookie) {
+    if (isProtectedRoute) {
+      return NextResponse.redirect(new URL("/admin/login", req.nextUrl));
+    }
+  }
+  const session = await decrypt(cookie);
+  if (isProtectedRoute && !session?.id) {
+    return NextResponse.redirect(new URL("/admin/login", req.nextUrl));
   }
 
-  console.log("Middleware passed, allowing request");
+  if (isPublicRoute && session?.id) {
+    return NextResponse.redirect(new URL("/admin", req.nextUrl));
+  }
 
-  return NextResponse.next();
+  return NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 }
 
 export const config = {
-  matcher: [
-    {
-      source: "/((?!admin/login)admin/.*)",
-      missing: [
-        { type: "header", key: "next-router-prefetch" },
-        { type: "header", key: "purpose", value: "prefetch" },
-      ],
-    },
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"],
 };

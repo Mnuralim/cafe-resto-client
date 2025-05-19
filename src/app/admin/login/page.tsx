@@ -42,7 +42,7 @@ const LoginPage = () => {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className="min-h-screen flex items-center justify-center p-4 fixed top-0 left-0 w-full"
       style={{
         background:
           "linear-gradient(135deg, #6A67CE 0%, #3533A1 50%, #1E1D5A 100%)",
