@@ -8,14 +8,23 @@ import Swal from "sweetalert2";
 import { customRevaldation } from "@/action";
 import Image from "next/image";
 import { FilterControll } from "./filter-controll";
+import { Pagination } from "./pagination";
 
 interface Props {
   data: MenuApiResponse;
   categories: ICategory[];
   currentSortMenu?: string;
+  currentSearch?: string;
+  currentLimit?: string;
 }
 
-export const ListMenu = ({ data, categories, currentSortMenu }: Props) => {
+export const ListMenu = ({
+  data,
+  categories,
+  currentSortMenu,
+  currentSearch,
+  currentLimit,
+}: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"add" | "edit">("add");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -235,6 +244,7 @@ export const ListMenu = ({ data, categories, currentSortMenu }: Props) => {
       <FilterControll
         categories={categories}
         currentSortMenu={currentSortMenu}
+        menuCount={data.meta.totalMenus}
       />
 
       {/* Mobile view (cards) */}
@@ -317,6 +327,10 @@ export const ListMenu = ({ data, categories, currentSortMenu }: Props) => {
           </table>
         </div>
       </div>
+
+      {currentSearch ? null : (
+        <Pagination meta={data.meta} currentLimit={currentLimit} />
+      )}
 
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <h2 className="text-xl md:text-2xl font-bold text-[#3533A1] mb-4">

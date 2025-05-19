@@ -6,9 +6,13 @@ import { GoSortAsc, GoSortDesc } from "react-icons/go";
 
 interface FilterControlProps {
   currentSortOrder?: string;
+  orderCount: number;
 }
 
-export const FilterControll = ({ currentSortOrder }: FilterControlProps) => {
+export const FilterControll = ({
+  currentSortOrder,
+  orderCount,
+}: FilterControlProps) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -32,18 +36,31 @@ export const FilterControll = ({ currentSortOrder }: FilterControlProps) => {
   const handleSearch = useDebouncedCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newParams = new URLSearchParams(searchParams);
-      newParams.set("searchQuery", e.target.value);
-      replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
+      newParams.delete("page");
+
+      newParams.set("search", e.target.value);
+      if (e.target.value === "") {
+        newParams.delete("limit");
+        newParams.delete("search");
+      } else {
+        newParams.set("limit", orderCount.toString());
+      }
+      replace(`/admin/orders?${newParams.toString()}`, {
+        scroll: false,
+      });
     },
     500
   );
-
   const handleFilterStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams);
-    e.target.value === "ALL"
-      ? newParams.delete("status")
-      : newParams.set("status", e.target.value);
-    replace(`/admin/orders?${newParams.toString()}`, { scroll: false });
+    if (e.target.value === "ALL") {
+      newParams.delete("status");
+    } else {
+      newParams.set("status", e.target.value);
+    }
+    replace(`/admin/orders?${newParams.toString()}`, {
+      scroll: false,
+    });
   };
 
   const handleSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => {

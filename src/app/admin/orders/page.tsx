@@ -26,6 +26,7 @@ export default async function OrdersPage({ searchParams }: Props) {
         data={orders}
         currentSortOrder={sortOrder}
         currentLimit={limit}
+        currentSearch={search}
       />
     </main>
   );

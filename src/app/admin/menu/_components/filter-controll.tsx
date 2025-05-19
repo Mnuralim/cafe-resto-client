@@ -7,9 +7,14 @@ import { GoSortAsc, GoSortDesc } from "react-icons/go";
 interface Props {
   currentSortMenu?: string;
   categories: ICategory[];
+  menuCount: number;
 }
 
-export const FilterControll = ({ currentSortMenu, categories }: Props) => {
+export const FilterControll = ({
+  currentSortMenu,
+  categories,
+  menuCount,
+}: Props) => {
   const [isFilterExpanded, setIsFilterExpanded] = useState(false);
   const { replace } = useRouter();
   const searchParams = useSearchParams();
@@ -23,7 +28,13 @@ export const FilterControll = ({ currentSortMenu, categories }: Props) => {
   const handleSearch = useDebouncedCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newParams = new URLSearchParams(searchParams);
-      newParams.set("search", e.target.value);
+      newParams.delete("page");
+      if (e.target.value === "") {
+        newParams.delete("search");
+        newParams.delete("limit");
+      } else {
+        newParams.set("limit", menuCount.toString());
+      }
       replace(`/admin/menu?${newParams.toString()}`, { scroll: false });
     },
     500
@@ -31,9 +42,13 @@ export const FilterControll = ({ currentSortMenu, categories }: Props) => {
 
   const handleFilterCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newParams = new URLSearchParams(searchParams);
-    e.target.value === "ALL"
-      ? newParams.delete("category")
-      : newParams.set("category", e.target.value);
+
+    if (e.target.value === "ALL") {
+      newParams.delete("category");
+    } else {
+      newParams.set("category", e.target.value);
+    }
+
     replace(`/admin/menu?${newParams.toString()}`, { scroll: false });
   };
 

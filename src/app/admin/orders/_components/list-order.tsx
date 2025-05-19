@@ -1,18 +1,24 @@
 "use client";
 import React from "react";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaSearch } from "react-icons/fa";
 import Link from "next/link";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { FilterControll } from "./filter-controll";
-import { Pagination } from "../../_components/pagination";
+import { Pagination } from "./pagination";
 
 interface Props {
   data: OrderApiResponse;
   currentSortOrder?: string;
   currentLimit?: string;
+  currentSearch?: string;
 }
 
-export const ListOrder = ({ data, currentLimit, currentSortOrder }: Props) => {
+export const ListOrder = ({
+  data,
+  currentLimit,
+  currentSortOrder,
+  currentSearch,
+}: Props) => {
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "COMPLETED":
@@ -96,9 +102,20 @@ export const ListOrder = ({ data, currentLimit, currentSortOrder }: Props) => {
           <h1 className="text-xl md:text-2xl font-bold text-[#3533A1]">
             Data Orders
           </h1>
+          <div className="relative hidden sm:block">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="pl-10 pr-4 py-2 w-32 md:w-auto border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
+            />
+            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+          </div>
         </div>
 
-        <FilterControll currentSortOrder={currentSortOrder} />
+        <FilterControll
+          currentSortOrder={currentSortOrder}
+          orderCount={data.meta.totalOrders}
+        />
 
         <div className="md:hidden space-y-4">
           {data.data.map(renderOrderCard)}
@@ -165,7 +182,9 @@ export const ListOrder = ({ data, currentLimit, currentSortOrder }: Props) => {
           </div>
         </div>
 
-        <Pagination meta={data.meta} currentLimit={currentLimit} />
+        {currentSearch ? null : (
+          <Pagination meta={data.meta} currentLimit={currentLimit} />
+        )}
 
         {data.data.length === 0 && (
           <div className="bg-white rounded-lg shadow-md p-8 text-center">

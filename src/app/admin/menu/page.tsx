@@ -30,6 +30,8 @@ export default async function MenuPage({ searchParams }: Props) {
         data={menus}
         categories={categories}
         currentSortMenu={sortMenu}
+        currentSearch={search}
+        currentLimit={limit}
       />
     </main>
   );
