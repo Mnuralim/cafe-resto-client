@@ -29,6 +29,7 @@ export const FilterControll = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newParams = new URLSearchParams(searchParams);
       newParams.delete("page");
+      newParams.set("search", e.target.value);
       if (e.target.value === "") {
         newParams.delete("search");
         newParams.delete("limit");
