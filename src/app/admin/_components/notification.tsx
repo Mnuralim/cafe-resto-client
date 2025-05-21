@@ -215,31 +215,31 @@ export const NotificationList = ({ token }: Props) => {
     }
   };
 
-  const handleMarkAllAsRead = async () => {
-    try {
-      const response = await fetch(
-        `${API_URL}/api/v1/notifications/mark-all-read`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  // const handleMarkAllAsRead = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${API_URL}/api/v1/notifications/mark-all-read`,
+  //       {
+  //         method: "PATCH",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error("Failed to mark all notifications as read");
-      }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to mark all notifications as read");
+  //     }
 
-      setNotifications((prev) =>
-        prev.map((notif) => ({ ...notif, read: true }))
-      );
-      setUnreadCount(0);
-    } catch (error) {
-      console.error("Failed to mark all notifications as read:", error);
-    }
-  };
+  //     setNotifications((prev) =>
+  //       prev.map((notif) => ({ ...notif, read: true }))
+  //     );
+  //     setUnreadCount(0);
+  //   } catch (error) {
+  //     console.error("Failed to mark all notifications as read:", error);
+  //   }
+  // };
 
   const handleViewAll = () => {
     console.log("View all notifications");
