@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaUser, FaLock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2"; // Import sweetalert2
+import { login } from "@/lib/api";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -11,45 +12,43 @@ const LoginPage = () => {
   const [error, setError] = useState(""); // State untuk pesan error
   const router = useRouter();
 
-  // Fungsi untuk handle login
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validasi sederhana
-    if (username === "admin" && password === "admin123") {
-      setError(""); // Hapus pesan error jika ada
+    try {
+      const response = await login(username, password);
+      const resJson = await response.json();
+      if (!response.ok) {
+        throw new Error(resJson.message);
+      }
+      router.push("/admin");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Login gagal");
       Swal.fire({
-        title: "Login Berhasil!",
-        text: "Anda akan diarahkan ke dashboard.",
-        icon: "success",
+        title: "Login Gagal!",
+        text: error instanceof Error ? error.message : "Login gagal",
+        icon: "error",
         confirmButtonColor: "#6A67CE",
         confirmButtonText: "OK",
-      }).then(() => {
-        router.push("/admin/dashboard"); // Redirect ke dashboard admin
       });
-    } else {
-      setError("Username atau password salah!"); // Tampilkan pesan error
     }
   };
 
-  // Fungsi untuk toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Cek apakah form sudah terisi
   const isFormValid = username.trim() !== "" && password.trim() !== "";
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
+      className="min-h-screen flex items-center justify-center p-4 fixed top-0 left-0 w-full"
       style={{
         background:
           "linear-gradient(135deg, #6A67CE 0%, #3533A1 50%, #1E1D5A 100%)",
       }}
     >
       <div className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-md transform transition-all duration-300 hover:scale-105">
-        {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-[#3533A1] mb-2">
             Login Admin
@@ -59,9 +58,7 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Form Login */}
         <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
-          {/* Username */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Username
@@ -79,7 +76,6 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Password */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Password
@@ -104,12 +100,10 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Pesan Error */}
           {error && (
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
-          {/* Tombol Login */}
           <div>
             <button
               type="submit"

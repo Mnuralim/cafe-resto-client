@@ -1,164 +1,256 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   FaChartLine,
-  FaUtensils,
   FaChair,
   FaClipboardList,
-  FaUser,
+  FaSignOutAlt,
   FaTimes,
+  FaUtensils,
+  FaBars,
+  FaFileAlt,
+  FaExclamationTriangle,
+  FaUser,
 } from "react-icons/fa";
-import DropdownMenu from "./DropdownMenu";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { logOut } from "@/action";
 
-interface SidebarProps {
-  isSidebarOpen: boolean;
-  activeMenu: string;
-  handleMenuClick: (menu: string) => void;
-  closeSidebar: () => void;
-}
+const navItems = [
+  {
+    title: "Dashboard",
+    icon: <FaChartLine className="w-5 h-5" />,
+    path: "/admin",
+  },
+  {
+    title: "Meja",
+    icon: <FaChair className="w-5 h-5" />,
+    path: "/admin/table",
+  },
+  {
+    title: "Menu",
+    icon: <FaUtensils className="w-5 h-5" />,
+    path: "/admin/menu",
+  },
+  {
+    title: "Pesanan",
+    icon: <FaClipboardList className="w-5 h-5" />,
+    path: "/admin/orders",
+  },
+  {
+    title: "Laporan",
+    icon: <FaFileAlt className="w-5 h-5" />,
+    path: "/admin/report",
+  },
+];
 
-const Sidebar: React.FC<SidebarProps> = ({
-  isSidebarOpen,
-  activeMenu,
-  handleMenuClick,
-  closeSidebar,
-}) => {
+const Sidebar = ({ username = "Admin" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
-  // Fungsi untuk menutup sidebar ketika klik di luar sidebar
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node)
-      ) {
-        closeSidebar();
+    setIsMounted(true);
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
       }
     };
 
-    // Tambahkan event listener ketika sidebar terbuka
-    if (isSidebarOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+    handleResize();
 
-    // Bersihkan event listener ketika komponen di-unmount atau sidebar tertutup
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node) &&
+        window.innerWidth < 1024 &&
+        isOpen
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isSidebarOpen, closeSidebar]);
+  }, [isOpen, isMounted]);
 
+  const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth < 1024) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    setShowLogoutModal(false);
+    logOut();
+  };
+
+  if (pathname === "/admin/login") return null;
+  if (!isMounted) return null;
   return (
-    <div
-      ref={sidebarRef}
-      className={`fixed inset-y-0 left-0 w-64 bg-[#3533A1] text-white shadow-lg transform transition-transform duration-300 ${
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } lg:translate-x-0 lg:static lg:w-64`}
-    >
-      {/* Header Sidebar dengan Tombol Close (X) */}
-      <div className="p-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Coffee & Resto</h1>
-        <button
-          onClick={closeSidebar}
-          className="lg:hidden p-2 rounded-lg hover:bg-[#6A67CE] transition-all duration-300"
-        >
-          <FaTimes className="text-2xl" />
-        </button>
-      </div>
+    <>
+      <button
+        onClick={toggleSidebar}
+        className="fixed top-3.5 left-4 p-2 rounded-md bg-indigo-800 text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.8)] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all z-30 lg:hidden"
+        aria-label="Toggle sidebar"
+      >
+        {isOpen ? (
+          <FaTimes className="w-5 h-5" />
+        ) : (
+          <FaBars className="w-5 h-5" />
+        )}
+      </button>
 
-      {/* Navigasi Sidebar */}
-      <nav className="mt-6">
-        <ul className="space-y-2">
-          <li>
-            <Link
-              href="/admin/dashboard"
-              onClick={() => handleMenuClick("dashboard")}
-              className={`flex items-center p-4 rounded-lg transition-all duration-300 ${
-                activeMenu === "dashboard"
-                  ? "bg-[#6A67CE] font-bold"
-                  : "hover:bg-[#6A67CE]"
-              }`}
+      {isOpen && (
+        <div
+          className="fixed inset-0 backdrop-blur-sm bg-black/50 z-20 lg:hidden"
+          onClick={toggleSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        ref={sidebarRef}
+        className={`
+          fixed left-0 top-0 h-full z-30
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          transition-transform duration-300 ease-in-out
+          w-72 bg-gradient-to-b from-indigo-900 to-indigo-800 text-white
+          shadow-lg
+          ${pathname === "/admin/login" ? "hidden" : ""}
+        `}
+      >
+        <div className="flex flex-col h-full">
+          <div className="flex items-center justify-between h-16 px-6 border-b border-[#3533A1]">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-bold text-white">Coffee & Resto</h1>
+            </div>
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 rounded-md hover:bg-indigo-700 lg:hidden"
+              aria-label="Close sidebar"
             >
-              <FaChartLine className="mr-3" />
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <DropdownMenu
-              title="Menu"
-              icon={<FaUtensils className="mr-3" />}
-              isActive={activeMenu === "menu"}
-              onClick={() => handleMenuClick("menu")}
-            >
-              <Link
-                href="/admin/menu/daftar_menu"
-                onClick={() => handleMenuClick("data_menu")}
-                className={`block p-2 pl-10 rounded-lg transition-all duration-300 ${
-                  activeMenu === "data_menu"
-                    ? "bg-[#6A67CE] font-bold"
-                    : "hover:bg-[#6A67CE]"
-                }`}
+              <FaTimes className="w-5 h-5 text-white" />
+            </button>
+          </div>
+
+          <div className="flex-1 pt-5 pb-4 overflow-y-auto">
+            <nav className="px-3">
+              <ul className="space-y-2">
+                {navItems.map((item, index) => {
+                  const isActive = pathname === item.path;
+                  return (
+                    <li key={index}>
+                      <Link
+                        href={item.path}
+                        className={`flex items-center px-4 py-3 text-sm rounded-xl transition-all 
+                          ${
+                            isActive
+                              ? "bg-[#6A67CE] text-cyan-300 font-medium shadow-md"
+                              : "text-white hover:bg-[#6A67CE] hover:shadow-md"
+                          }`}
+                        onClick={closeSidebarOnMobile}
+                      >
+                        <span
+                          className={`flex-shrink-0 ${
+                            isActive ? "text-cyan-300" : "text-white"
+                          }`}
+                        >
+                          {item.icon}
+                        </span>
+                        <span className="ml-3 font-medium">{item.title}</span>
+                        {isActive && (
+                          <span className="ml-auto w-1 h-6 bg-cyan-300" />
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+
+          <div className="p-4 mt-auto border-t border-indigo-700">
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-md bg-indigo-600 flex-shrink-0 flex items-center justify-center text-white font-bold">
+                {username ? (
+                  username.charAt(0).toUpperCase()
+                ) : (
+                  <FaUser className="w-5 h-5" />
+                )}
+              </div>
+              <div className="ml-3 flex-1 overflow-hidden">
+                <p className="text-sm font-bold text-white truncate">
+                  {username}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowLogoutModal(true)}
+                className="p-2 cursor-pointer bg-red-700 hover:bg-red-600 rounded-md text-white"
+                title="Logout"
               >
-                Daftar Menu
-              </Link>
-              <Link
-                href="/admin/menu/kategori"
-                onClick={() => handleMenuClick("kategori")}
-                className={`block p-2 pl-10 rounded-lg transition-all duration-300 ${
-                  activeMenu === "kategori"
-                    ? "bg-[#6A67CE] font-bold"
-                    : "hover:bg-[#6A67CE]"
-                }`}
-              >
-                Kategori
-              </Link>
-            </DropdownMenu>
-          </li>
-          <li>
-            <Link
-              href="/admin/meja"
-              onClick={() => handleMenuClick("meja")}
-              className={`flex items-center p-4 rounded-lg transition-all duration-300 ${
-                activeMenu === "meja"
-                  ? "bg-[#6A67CE] font-bold"
-                  : "hover:bg-[#6A67CE]"
-              }`}
-            >
-              <FaChair className="mr-3" />
-              Meja
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/admin/orders"
-              onClick={() => handleMenuClick("orders")}
-              className={`flex items-center p-4 rounded-lg transition-all duration-300 ${
-                activeMenu === "orders"
-                  ? "bg-[#6A67CE] font-bold"
-                  : "hover:bg-[#6A67CE]"
-              }`}
-            >
-              <FaClipboardList className="mr-3" />
-              Orders
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/admin/account"
-              onClick={() => handleMenuClick("account")}
-              className={`flex items-center p-4 rounded-lg transition-all duration-300 ${
-                activeMenu === "account"
-                  ? "bg-[#6A67CE] font-bold"
-                  : "hover:bg-[#6A67CE]"
-              }`}
-            >
-              <FaUser className="mr-3" />
-              Akun
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </div>
+                <FaSignOutAlt className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <div className="text-center text-indigo-300 text-sm p-2 border-t border-indigo-700">
+            Coffee & Resto © {new Date().getFullYear()}
+          </div>
+        </div>
+      </aside>
+
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/50">
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-md transform transition-all duration-300 scale-95 animate-fadeIn">
+            <div className="p-8 text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
+                <FaExclamationTriangle className="h-8 w-8 text-red-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Konfirmasi Logout
+              </h3>
+              <p className="text-gray-600 mb-8">
+                Anda akan keluar dari akun admin. Yakin ingin melanjutkan?
+              </p>
+              <div className="flex justify-center gap-5">
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="px-6 py-3 rounded-xl border-2 border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-300 font-medium focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium shadow-lg hover:shadow-red-500/30 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                >
+                  Ya, Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
