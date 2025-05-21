@@ -51,7 +51,15 @@ export const DetailOrder = ({ order }: Props) => {
         icon: "success",
         confirmButtonColor: "#6A67CE",
       });
-      customRevaldation(`/admin/orders/${order.id}`, "page");
+      customRevaldation(
+        [
+          `/admin/orders/${order.id}`,
+          "/admin/orders",
+          "/admin/report",
+          "/admin",
+        ],
+        "page"
+      );
       setIsEditModalOpen(false);
     } catch (error) {
       Swal.fire({

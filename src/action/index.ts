@@ -10,8 +10,15 @@ import { cache } from "react";
 const secretKey = process.env.SECRET_KEY;
 const key = new TextEncoder().encode(secretKey);
 
-export async function customRevaldation(path: string, type: "layout" | "page") {
-  revalidatePath(path, type);
+export async function customRevaldation(
+  paths: string[] | string,
+  type: "layout" | "page"
+) {
+  const path = Array.isArray(paths) ? paths : [paths];
+
+  for (const p of path) {
+    revalidatePath(p, type);
+  }
 }
 
 export async function decrypt(session: string | undefined = "") {

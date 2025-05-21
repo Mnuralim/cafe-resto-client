@@ -23,7 +23,7 @@ export const ListReports = ({ data, currentSortReport }: Props) => {
       <div className="p-4 md:p-6">
         <div className="flex justify-between items-center mb-4 md:mb-6">
           <h1 className="text-xl md:text-2xl font-bold text-[#3533A1]">
-            Data Orders
+            Data Laporan
           </h1>
           <button
             onClick={handlePrint}
