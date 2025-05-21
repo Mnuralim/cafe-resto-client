@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { FaSearch, FaClipboardList } from "react-icons/fa";
 import { useOrderHistoryStore } from "@/store/order-history";
-import { PreserveLink } from "@/app/_components/preserver-link";
+import Link from "next/link";
 
 export const UserOrderHistory = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,7 +49,7 @@ export const UserOrderHistory = () => {
         {sortedOrders.length > 0 ? (
           <div className="space-y-4">
             {sortedOrders.map((order) => (
-              <PreserveLink
+              <Link
                 href={`/history/${order.id}`}
                 key={order.id}
                 className="block"
@@ -84,7 +84,7 @@ export const UserOrderHistory = () => {
                     </div>
                   </div>
                 </div>
-              </PreserveLink>
+              </Link>
             ))}
           </div>
         ) : (

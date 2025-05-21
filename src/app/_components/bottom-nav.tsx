@@ -1,8 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { PreserveLink } from "./preserver-link";
 import { FaHistory, FaShoppingCart, FaUtensils } from "react-icons/fa";
 
 const navItems = [
@@ -35,7 +35,7 @@ export const BottomNav = () => {
     <div className="fixed bottom-0 z-50 left-0 right-0 bg-white border-t border-gray-200 shadow-sm">
       <div className="flex justify-around max-w-3xl mx-auto  items-center p-2">
         {navItems.map((item) => (
-          <PreserveLink
+          <Link
             key={item.title}
             href={`${item.path}`}
             className="flex flex-col items-center"
@@ -54,7 +54,7 @@ export const BottomNav = () => {
             >
               {item.title}
             </span>
-          </PreserveLink>
+          </Link>
         ))}
       </div>
     </div>
