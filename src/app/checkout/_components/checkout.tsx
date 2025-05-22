@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cart";
-import Link from "next/link";
 import Image from "next/image";
 import { createOrder } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useOrderHistoryStore } from "@/store/order-history";
+import { PreserveLink } from "@/app/_components/preserver-link";
 
 interface Props {
   tableNumberData: number;
@@ -253,14 +253,14 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
             </div>
 
             <div className="flex space-x-4 pt-4">
-              <Link href="/cart" className="flex-1">
+              <PreserveLink href="/cart" className="flex-1">
                 <button
                   type="button"
                   className="w-full px-6 py-3 border border-[#3533A1] text-[#3533A1] rounded-lg hover:bg-gray-50 transition-all"
                 >
                   Kembali
                 </button>
-              </Link>
+              </PreserveLink>
               <button
                 type="submit"
                 disabled={isSubmitting}

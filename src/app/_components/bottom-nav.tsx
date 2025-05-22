@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { FaHistory, FaShoppingCart, FaUtensils } from "react-icons/fa";
+import { PreserveLink } from "./preserver-link";
 
 const navItems = [
   {
@@ -26,7 +26,6 @@ const navItems = [
 
 export const BottomNav = () => {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   if (pathname === "/" || pathname.startsWith("/admin")) {
     return null;
@@ -36,9 +35,9 @@ export const BottomNav = () => {
     <div className="fixed bottom-0 z-50 left-0 right-0 bg-white border-t border-gray-200 shadow-sm">
       <div className="flex justify-around max-w-3xl mx-auto  items-center p-2">
         {navItems.map((item) => (
-          <Link
+          <PreserveLink
             key={item.title}
-            href={`${item.path}?${searchParams.toString()}`}
+            href={`${item.path}`}
             className="flex flex-col items-center"
           >
             <span
@@ -55,7 +54,7 @@ export const BottomNav = () => {
             >
               {item.title}
             </span>
-          </Link>
+          </PreserveLink>
         ))}
       </div>
     </div>

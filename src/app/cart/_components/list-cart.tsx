@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { useCartStore } from "@/store/cart";
-import Link from "next/link";
+import { PreserveLink } from "@/app/_components/preserver-link";
 
 export const ListCart = () => {
   const { items, removeItem, updateQuantity, clearCart, getTotalPrice } =
@@ -31,12 +31,12 @@ export const ListCart = () => {
               ></path>
             </svg>
             <p className="text-gray-600 mb-6">Keranjang belanja kamu kosong</p>
-            <Link
+            <PreserveLink
               href="/menu"
               className="px-6 py-2 bg-[#3533A1] text-white rounded-lg hover:bg-[#2a287e] transition-all"
             >
               Lihat Menu
-            </Link>
+            </PreserveLink>
           </div>
         </div>
       </div>
@@ -150,18 +150,18 @@ export const ListCart = () => {
           </div>
 
           <div className="flex space-x-4">
-            <Link
+            <PreserveLink
               href="/menu"
               className="w-full px-6 text-center py-3 border border-[#3533A1] text-[#3533A1] rounded-lg hover:bg-gray-50 transition-all"
             >
               Kembali ke Menu
-            </Link>
-            <Link
+            </PreserveLink>
+            <PreserveLink
               href="/checkout"
               className="flex-1 px-6 py-3 bg-[#3533A1] text-center text-white rounded-lg hover:bg-[#2a287e] transition-all"
             >
               Checkout
-            </Link>
+            </PreserveLink>
           </div>
         </div>
       </div>
