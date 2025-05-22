@@ -2,10 +2,8 @@ import BerandaPage from "./pelanggan/beranda/page";
 
 export default function Home() {
   return (
-    <>
-      <h1>
-        <BerandaPage />
-      </h1>
-    </>
+    <main className="bg-yellow-400 h-screen overflow-hidden">
+      <BerandaPage />;
+    </main>
   );
 }
