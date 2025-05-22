@@ -22,12 +22,15 @@ export default async function middleware(req: NextRequest) {
 
   const cookie = (await cookies()).get("token")?.value;
 
+  console.log("cookie", cookie);
+
   if (!cookie) {
     if (isProtectedRoute) {
       return NextResponse.redirect(new URL("/admin/login", req.nextUrl));
     }
   }
   const session = await decrypt(cookie);
+  console.log("session", session);
 
   if (isProtectedRoute && !session?.id) {
     return NextResponse.redirect(new URL("/admin/login", req.nextUrl));
@@ -36,6 +39,7 @@ export default async function middleware(req: NextRequest) {
   if (isPublicRoute && session?.id) {
     return NextResponse.redirect(new URL("/admin", req.nextUrl));
   }
+  console.log("requestHeaders", requestHeaders);
 
   return NextResponse.next({
     request: { headers: requestHeaders },
