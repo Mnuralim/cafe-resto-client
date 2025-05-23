@@ -91,11 +91,13 @@ export const ListCart = () => {
                             Math.max(1, item.quantity - 1)
                           )
                         }
-                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200"
+                        className="px-3 py-1 bg-gray-100 text-black hover:bg-gray-200"
                       >
                         -
                       </button>
-                      <span className="px-4 py-1">{item.quantity}</span>
+                      <span className="px-4 py-1 text-black">
+                        {item.quantity}
+                      </span>
                       <button
                         onClick={() =>
                           updateQuantity(item.id, item.quantity + 1)

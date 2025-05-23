@@ -86,13 +86,12 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
       >
         <SwiperSlide>
           <div className="p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ">
-            {dataMenu.data.length > 0 ? (
+            {dataMenu.data.length > 0 &&
               dataMenu.data.map((item) => (
                 <div
                   key={item.id}
                   className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col border border-gray-100 hover:border-gray-200"
                 >
-                  {/* Image container */}
                   <div className="relative w-full pb-[75%]">
                     <Image
                       src={item.image}
@@ -105,7 +104,6 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
                     <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent" />
                   </div>
 
-                  {/* Card content */}
                   <div className="p-0 flex flex-col flex-grow">
                     <div className="px-3 pt-3">
                       <h3 className="font-bold text-gray-900 text-sm line-clamp-2 mb-2 leading-tight">
@@ -132,7 +130,6 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
                       </p>
                     </div>
 
-                    {/* Button with squared top corners */}
                     <Button
                       id={item.id}
                       name={item.name}
@@ -154,23 +151,23 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
                     />
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-                <div className="text-gray-500 mb-2">
-                  Tidak ada menu yang sesuai dengan pencarian
-                </div>
-                <button
-                  onClick={handleReset}
-                  className="text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
-                >
-                  Reset pencarian
-                </button>
-              </div>
-            )}
+              ))}
           </div>
         </SwiperSlide>
       </Swiper>
+      {dataMenu.data.length === 0 && (
+        <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+          <div className="text-gray-500 mb-2">
+            Tidak ada menu yang sesuai dengan pencarian
+          </div>
+          <button
+            onClick={handleReset}
+            className="text-indigo-600 hover:text-indigo-800 font-medium cursor-pointer"
+          >
+            Reset pencarian
+          </button>
+        </div>
+      )}
     </>
   );
 };

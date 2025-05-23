@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+
 const API_URL =
   `${process.env.NEXT_PUBLIC_API_URL}/api/v1` || "http://localhost:5000/api/v1";
 
@@ -242,6 +244,17 @@ export async function login(username: string, password: string) {
   });
 
   return response;
+}
+
+export async function logout() {
+  const response = await fetch(`${API_URL}/admin/logout`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  if (response.ok) {
+    redirect("/admin/login");
+  }
 }
 
 export const createTable = async (tableNumber: number) => {

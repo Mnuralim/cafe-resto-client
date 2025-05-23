@@ -57,8 +57,3 @@ export const getAdmin = cache(async () => {
     return null;
   }
 });
-
-export const logOut = async () => {
-  (await cookies()).delete("token");
-  redirect("/admin/login");
-};
