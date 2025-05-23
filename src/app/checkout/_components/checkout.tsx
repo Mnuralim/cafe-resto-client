@@ -7,6 +7,7 @@ import { createOrder } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useOrderHistoryStore } from "@/store/order-history";
 import { PreserveLink } from "@/app/_components/preserver-link";
+import Swal from "sweetalert2";
 
 interface Props {
   tableNumberData: number;
@@ -52,25 +53,23 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!customerName.trim()) {
-      setError("Harap masukkan nama Anda");
-      return;
-    }
-
-    if (!latitudeData || !longitudeData) {
-      setError("Gagal mendapatkan lokasi Anda");
-      return;
-    }
-
-    if (!tableNumberData) {
-      setError("Nomor meja tidak ditemukan");
-      return;
-    }
-
     setIsSubmitting(true);
     setError(null);
 
     try {
+      if (!customerName.trim()) {
+        throw new Error("Nama pelanggan harus diisi");
+      }
+
+      if (!latitudeData || !longitudeData) {
+        throw new Error(
+          "Gagal mendapatkan lokasi. Izin lokasi ditolak. Silakan berikan izin lokasi dan coba lagi."
+        );
+      }
+
+      if (!tableNumberData) {
+        throw new Error("Nomor meja tidak valid");
+      }
       const response = await createOrder(
         latitudeData,
         longitudeData,
@@ -90,13 +89,21 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
       const data: IOrder = resJson.data;
       clearCart();
       addOrder(data);
-      alert("Pesanan berhasil dibuat");
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Pesanan berhasil dibuat",
+        icon: "success",
+        confirmButtonColor: "#6A67CE",
+      });
       router.push(`/history/${data.id}?table=${tableId}`);
     } catch (error) {
-      console.error("Error submitting order:", error);
-      setError(
-        error instanceof Error ? error.message : "Gagal membuat pesanan"
-      );
+      Swal.fire({
+        title: "Gagal!",
+        text: error instanceof Error ? error.message : "Terjadi kesalahan",
+        icon: "error",
+        confirmButtonColor: "#6A67CE",
+      });
       setIsSubmitting(false);
     }
   };

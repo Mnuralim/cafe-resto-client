@@ -37,6 +37,19 @@ export const DetailOrder = ({ order }: Props) => {
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus>(
     order.status
   );
+
+  const isOrderFinalized =
+    order.status === "COMPLETED" || order.status === "CANCELLED";
+
+  const getTooltipMessage = () => {
+    if (order.status === "COMPLETED") {
+      return "Pesanan telah selesai dan tidak dapat diubah lagi";
+    } else if (order.status === "CANCELLED") {
+      return "Pesanan telah dibatalkan dan tidak dapat diubah lagi";
+    }
+    return "";
+  };
+
   const handleStatusChange = async () => {
     try {
       const response = await updateOrderStatus(order.id, selectedStatus);
@@ -87,13 +100,26 @@ export const DetailOrder = ({ order }: Props) => {
             </h1>
           </div>
           <div className="flex space-x-3">
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="bg-[#3533A1] text-white px-4 py-2 rounded-lg hover:bg-[#6A67CE] flex items-center"
-            >
-              <FaEdit className="mr-2" />
-              Edit Status
-            </button>
+            <div className="relative group">
+              <button
+                onClick={() => !isOrderFinalized && setIsEditModalOpen(true)}
+                disabled={isOrderFinalized}
+                className={`px-4 py-2 rounded-lg flex items-center transition-all duration-200 ${
+                  isOrderFinalized
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-[#3533A1] text-white hover:bg-[#6A67CE]"
+                }`}
+              >
+                <FaEdit className="mr-2" />
+                Edit Status
+              </button>
+              {isOrderFinalized && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                  {getTooltipMessage()}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-800"></div>
+                </div>
+              )}
+            </div>
             <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 flex items-center">
               <FaPrint className="mr-2" />
               Cetak

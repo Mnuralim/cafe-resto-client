@@ -11,10 +11,11 @@ import {
   FaFileAlt,
   FaExclamationTriangle,
   FaUser,
+  FaCog,
 } from "react-icons/fa";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { logOut } from "@/action";
+import { logout } from "@/lib/api";
 
 const navItems = [
   {
@@ -41,6 +42,11 @@ const navItems = [
     title: "Laporan",
     icon: <FaFileAlt className="w-5 h-5" />,
     path: "/admin/report",
+  },
+  {
+    title: "Pengaturan",
+    icon: <FaCog className="w-5 h-5" />,
+    path: "/admin/settings",
   },
 ];
 
@@ -99,9 +105,9 @@ const Sidebar = ({ username = "Admin" }) => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setShowLogoutModal(false);
-    logOut();
+    await logout();
   };
 
   if (pathname === "/admin/login") return null;
@@ -157,7 +163,9 @@ const Sidebar = ({ username = "Admin" }) => {
             <nav className="px-3">
               <ul className="space-y-2">
                 {navItems.map((item, index) => {
-                  const isActive = pathname === item.path;
+                  const isActive =
+                    pathname === item.path ||
+                    (pathname.includes(item.path) && item.path !== "/admin");
                   return (
                     <li key={index}>
                       <Link

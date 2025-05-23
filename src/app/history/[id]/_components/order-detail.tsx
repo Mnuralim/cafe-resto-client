@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { FaArrowLeft, FaPrint } from "react-icons/fa";
-import Link from "next/link";
 import Image from "next/image";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { io, Socket } from "socket.io-client";
+import { PreserveLink } from "@/app/_components/preserver-link";
 
 interface Props {
   order: IOrder;
@@ -82,12 +82,12 @@ export const UserOrderDetail = ({ order }: Props) => {
     <div className="bg-gray-50 min-h-screen pb-20">
       <div className="max-w-4xl mx-auto pt-6 px-4">
         <div className="flex items-center mb-6">
-          <Link
-            href="/orders"
+          <PreserveLink
+            href="/history"
             className="mr-4 bg-gray-200 p-2 rounded-full hover:bg-gray-300"
           >
             <FaArrowLeft className="text-gray-700" />
-          </Link>
+          </PreserveLink>
           <h1 className="text-xl font-bold text-gray-800">
             Pesanan #{orderData.id.substring(0, 8)}
           </h1>

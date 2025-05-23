@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
-import { findAdminById } from "@/lib/api";
+import { findCurrentAdmin } from "@/lib/api";
 import { jwtVerify } from "jose";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
@@ -49,7 +49,7 @@ export const getAdmin = cache(async () => {
   if (!session) return null;
 
   try {
-    const data = await findAdminById(cookie!);
+    const data = await findCurrentAdmin(cookie!);
 
     return data;
   } catch (error) {
@@ -57,8 +57,3 @@ export const getAdmin = cache(async () => {
     return null;
   }
 });
-
-export const logOut = async () => {
-  (await cookies()).delete("token");
-  redirect("/admin/login");
-};

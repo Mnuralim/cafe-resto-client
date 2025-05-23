@@ -111,7 +111,7 @@ export const ListMenu = ({
         confirmButtonColor: "#6A67CE",
       });
 
-      customRevaldation("/admin/menu", "page");
+      customRevaldation(["/admin/menu","/menu"], "page");
       setIsModalOpen(false);
     } catch (error) {
       Swal.fire({
