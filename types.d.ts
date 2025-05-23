@@ -159,3 +159,13 @@ interface IStats {
 interface IWeeklySales {
   [day: string]: number;
 }
+
+interface ILocationSetting {
+  id: string;
+  latitude: number;
+  longitude: number;
+  radius: number;
+  isActive: boolean;
+  created_at: string;
+  updated_at: string;
+}

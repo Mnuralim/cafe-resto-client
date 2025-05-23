@@ -163,7 +163,9 @@ const Sidebar = ({ username = "Admin" }) => {
             <nav className="px-3">
               <ul className="space-y-2">
                 {navItems.map((item, index) => {
-                  const isActive = pathname.startsWith(item.path);
+                  const isActive =
+                    pathname === item.path ||
+                    (pathname.includes(item.path) && item.path !== "/admin");
                   return (
                     <li key={index}>
                       <Link

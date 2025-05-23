@@ -404,7 +404,7 @@ export const getWeeklySales = async () => {
   return data;
 };
 
-export const findAdminById = async (token: string) => {
+export const findCurrentAdmin = async (token: string) => {
   const response = await fetch(`${API_URL}/admin/me`, {
     method: "GET",
     credentials: "include",
@@ -423,4 +423,67 @@ export const findAdminById = async (token: string) => {
     username: string;
   } = resJson.data;
   return data;
+};
+
+export const getLocationSettings = async (token: string) => {
+  const response = await fetch(`${API_URL}/location-settings`, {
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch location settings");
+  }
+
+  const resJson = await response.json();
+  const data: ILocationSetting = resJson.data;
+  return data;
+};
+
+export const updateLocationSettings = async (
+  token: string,
+  latitude: number,
+  longitude: number,
+  radius: number,
+  status: "ACTIVE" | "INACTIVE"
+) => {
+  const response = await fetch(`${API_URL}/location-settings`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      latitude,
+      longitude,
+      radius,
+      status,
+    }),
+  });
+
+  return response;
+};
+
+export const updateAdmin = async (
+  token: string,
+  username: string,
+  password: string
+) => {
+  const response = await fetch(`${API_URL}/admin`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      username,
+      password,
+    }),
+  });
+
+  return response;
 };
