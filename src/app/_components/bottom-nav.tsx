@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { FaHistory, FaShoppingCart, FaUtensils } from "react-icons/fa";
 import { PreserveLink } from "./preserver-link";
+import { useCartStore } from "@/store/cart";
 
 const navItems = [
   {
@@ -26,6 +27,9 @@ const navItems = [
 
 export const BottomNav = () => {
   const pathname = usePathname();
+  const { getTotalItems } = useCartStore();
+
+  const totalItems = getTotalItems();
 
   if (pathname === "/" || pathname.startsWith("/admin")) {
     return null;
@@ -38,15 +42,24 @@ export const BottomNav = () => {
           <PreserveLink
             key={item.title}
             href={`${item.path}`}
-            className="flex flex-col items-center"
+            className="flex flex-col items-center relative"
           >
-            <span
-              className={`text-2xl ${
-                pathname === `${item.path}` ? "text-[#3533A1]" : "text-gray-700"
-              }`}
-            >
-              {item.icon}
-            </span>
+            <div className="relative">
+              <span
+                className={`text-2xl ${
+                  pathname === `${item.path}`
+                    ? "text-[#3533A1]"
+                    : "text-gray-700"
+                }`}
+              >
+                {item.icon}
+              </span>
+              {item.title === "Keranjang" && totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-1">
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              )}
+            </div>
             <span
               className={`text-sm ${
                 pathname === `${item.path}` ? "text-[#3533A1]" : "text-gray-700"
