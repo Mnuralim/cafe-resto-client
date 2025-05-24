@@ -135,7 +135,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                 id="customerName"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full p-3 border text-red-700 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
+                className="w-full p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
                 placeholder="Masukkan nama Anda"
                 required
               />
