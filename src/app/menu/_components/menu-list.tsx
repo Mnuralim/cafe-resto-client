@@ -57,7 +57,7 @@ export const MenuList = ({ categories, dataMenu, activeCategory }: Props) => {
             onChange={handleSearch}
             type="text"
             placeholder="Cari menu"
-            className="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900"
+            className="w-full p-2 pl-10 border text-gray-800 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900"
           />
           <span className="absolute left-3 top-3 text-gray-400">🔍</span>
         </div>

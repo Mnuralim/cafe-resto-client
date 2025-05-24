@@ -182,7 +182,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                           <h3 className="font-medium text-black">
                             {item.name}
                           </h3>
-                          <span>x{item.quantity}</span>
+                          <span className="text-black">x{item.quantity}</span>
                         </div>
                         <p className="text-sm text-gray-500">
                           Kategori: {item.category.name}
@@ -247,7 +247,9 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                 </div>
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between">
-                    <span className="text-lg font-bold">Total Pembayaran</span>
+                    <span className="text-lg text-black font-bold">
+                      Total Pembayaran
+                    </span>
                     <span className="text-lg font-bold text-[#3533A1]">
                       Rp {getTotalPrice().toLocaleString("id-ID")}
                     </span>
