@@ -336,6 +336,7 @@ export const readNotification = async (notificationId: string) => {
 };
 
 export const getReports = async (
+  token: string,
   startDate?: string,
   endDate?: string,
   sortBy?: string,
@@ -356,6 +357,9 @@ export const getReports = async (
   const response = await fetch(fullUrl, {
     method: "GET",
     credentials: "include",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     next: {
       revalidate: 3600 * 24,
     },
