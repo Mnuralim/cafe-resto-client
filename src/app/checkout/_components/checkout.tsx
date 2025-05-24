@@ -135,7 +135,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                 id="customerName"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
+                className="w-full p-3 border text-red-700 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
                 placeholder="Masukkan nama Anda"
                 required
               />
@@ -153,7 +153,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                 id="tableNumber"
                 value={tableNumberData}
                 readOnly
-                className="w-full p-3 border border-gray-300 rounded-lg bg-gray-50"
+                className="w-full p-3 border text-black border-gray-300 rounded-lg bg-gray-50"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Nomor meja diambil dari QR code yang Anda scan
@@ -179,7 +179,9 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between">
-                          <h3 className="font-medium">{item.name}</h3>
+                          <h3 className="font-medium text-black">
+                            {item.name}
+                          </h3>
                           <span>x{item.quantity}</span>
                         </div>
                         <p className="text-sm text-gray-500">
@@ -204,7 +206,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                             onChange={(e) =>
                               handleItemNoteChange(item.id, e.target.value)
                             }
-                            className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3533A1]"
+                            className="w-full p-2 text-sm border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#3533A1]"
                             placeholder="Contoh: tidak pedas, tanpa es, dll."
                           />
                         </div>
@@ -225,7 +227,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                   id="generalNotes"
                   value={generalNotes}
                   onChange={(e) => setGeneralNotes(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
+                  className="w-full p-3 border text-black border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
                   rows={2}
                   placeholder="Catatan tambahan untuk keseluruhan pesanan"
                 />

@@ -44,7 +44,7 @@ export const ListCart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 pt-4 pb-16">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white p-6 rounded-lg shadow-md mb-4">
           <div className="flex justify-between items-center mb-6">
@@ -95,14 +95,15 @@ export const ListCart = () => {
                       >
                         -
                       </button>
-                      <span className="px-4 py-1 text-black">
+
+                      <span className="px-4 text-black py-1">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() =>
                           updateQuantity(item.id, item.quantity + 1)
                         }
-                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200"
+                        className="px-3 py-1 bg-gray-100 text-black hover:bg-gray-200"
                       >
                         +
                       </button>
@@ -143,7 +144,9 @@ export const ListCart = () => {
             </div>
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between">
-                <span className="text-lg font-bold">Total Pembayaran</span>
+                <span className="text-lg text-black font-bold">
+                  Total Pembayaran
+                </span>
                 <span className="text-lg font-bold text-[#3533A1]">
                   Rp {getTotalPrice().toLocaleString("id-ID")}
                 </span>
