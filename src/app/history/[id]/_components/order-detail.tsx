@@ -240,17 +240,19 @@ export const UserOrderDetail = ({ order }: Props) => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Nama Pemesan</span>
-                <span className="font-medium">{orderData.customer_name}</span>
+                <span className="font-medium text-black">
+                  {orderData.customer_name}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Meja</span>
-                <span className="font-medium">
+                <span className="font-medium text-black">
                   Meja {orderData.table.number}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tanggal Pesanan</span>
-                <span className="font-medium">
+                <span className="font-medium text-black">
                   {formatDate(orderData.created_at)}
                 </span>
               </div>
@@ -316,13 +318,15 @@ export const UserOrderDetail = ({ order }: Props) => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">
+                <span className="font-medium text-black">
                   {formatCurrency(orderData.total_price)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Pajak (0%)</span>
-                <span className="font-medium">{formatCurrency(0)}</span>
+                <span className="font-medium text-black">
+                  {formatCurrency(0)}
+                </span>
               </div>
               <div className="border-t border-gray-200 my-2 pt-2"></div>
               <div className="flex justify-between font-bold">
@@ -334,7 +338,9 @@ export const UserOrderDetail = ({ order }: Props) => {
               <div className="border-t border-gray-200 my-2 pt-2"></div>
               <div className="flex justify-between font-medium">
                 <span className="text-gray-600">Metode Pembayaran</span>
-                <span>Tunai</span>
+                <span className="text-black font-bold">
+                  Tunai/Bayar Di Kasir
+                </span>
               </div>
             </div>
           </div>
