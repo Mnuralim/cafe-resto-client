@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { FaEye, FaSearch } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import Link from "next/link";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { FilterControll } from "./filter-controll";
