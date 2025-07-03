@@ -149,11 +149,14 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
                 Nomor Meja
               </label>
               <input
-                type="number"
+                type={tableNumberData === 0 ? "text" : "number"}
                 id="tableNumber"
-                value={tableNumberData}
+                value={
+                  tableNumberData === 0 ? "Meja Take Away" : tableNumberData
+                }
                 readOnly
-                className="w-full p-3 border text-black border-gray-300 rounded-lg bg-gray-50"
+                disabled
+                className="w-full p-3 border text-black border-gray-300 rounded-lg bg-gray-50 disabled:opacity-70 focus:outline-none focus:ring-2 focus:ring-[#3533A1]"
               />
               <p className="text-sm text-gray-500 mt-1">
                 Nomor meja diambil dari QR code yang Anda scan
