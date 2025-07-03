@@ -138,10 +138,7 @@ export const ListCart = () => {
                 Rp {getTotalPrice().toLocaleString("id-ID")}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Biaya pengiriman</span>
-              <span className="font-bold text-gray-800">Rp 0</span>
-            </div>
+
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between">
                 <span className="text-lg text-black font-bold">
