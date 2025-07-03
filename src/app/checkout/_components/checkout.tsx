@@ -67,7 +67,7 @@ export const Checkout = ({ tableNumberData, tableId }: Props) => {
         );
       }
 
-      if (!tableNumberData) {
+      if (!tableNumberData && tableNumberData !==0) {
         throw new Error("Nomor meja tidak valid");
       }
       const response = await createOrder(
