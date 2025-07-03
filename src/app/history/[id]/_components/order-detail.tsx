@@ -5,9 +5,14 @@ import Image from "next/image";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { io, Socket } from "socket.io-client";
 import { PreserveLink } from "@/app/_components/preserver-link";
+import Swal from "sweetalert2";
+import { updateTableOrder } from "@/lib/api";
+import { BiLoaderAlt } from "react-icons/bi";
+import { customRevaldation } from "@/action";
 
 interface Props {
   order: IOrder;
+  tables: ITable[];
 }
 
 const orderStatusInfo = {
@@ -33,9 +38,18 @@ const orderStatusInfo = {
   },
 };
 
-export const UserOrderDetail = ({ order }: Props) => {
+export const UserOrderDetail = ({ order, tables }: Props) => {
   const [orderData, setOrderData] = useState<IOrder>(order);
+  const [selectedChangeTable, setSelectedChangeTable] = useState<{
+    id: string;
+    number: number;
+  } | null>({
+    id: orderData.table?.id || "",
+    number: orderData.table?.number,
+  });
+  const [isTableChange, setIsTableChange] = useState(false);
   const socketRef = useRef<Socket | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   const currentStatus = orderStatusInfo[orderData.status];
@@ -77,6 +91,45 @@ export const UserOrderDetail = ({ order }: Props) => {
       }
     };
   }, [API_URL, order.id, orderData.id]);
+
+  const handleChangeTableOrder = async () => {
+    setIsSubmitting(true);
+    try {
+      if (!selectedChangeTable) {
+        throw new Error("Pilih meja terlebih dahulu");
+      }
+      if (selectedChangeTable.number === order.table.number) {
+        return;
+      }
+      const response = await updateTableOrder(
+        selectedChangeTable.id,
+        order.table.number.toString(),
+        order.id
+      );
+
+      if (!response.ok) {
+        throw new Error("Gagal mengganti meja");
+      }
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Meja berhasil diganti",
+        icon: "success",
+        confirmButtonColor: "#6A67CE",
+      });
+      setIsTableChange(false);
+      customRevaldation(`/history/${order.id}`, "page");
+    } catch (error) {
+      Swal.fire({
+        title: "Gagal!",
+        text: error instanceof Error ? error.message : "Terjadi kesalahan",
+        icon: "error",
+        confirmButtonColor: "#6A67CE",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
@@ -244,11 +297,68 @@ export const UserOrderDetail = ({ order }: Props) => {
                   {orderData.customer_name}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <span className="text-gray-600">Meja</span>
-                <span className="font-medium text-black">
-                  Meja {orderData.table.number}
-                </span>
+                <div className="flex items-center gap-2">
+                  {isTableChange ? (
+                    <select
+                      name=""
+                      id=""
+                      className="font-medium text-center text-black"
+                      value={selectedChangeTable?.id || ""}
+                      onChange={(e) => {
+                        setSelectedChangeTable({
+                          id: e.target.value,
+                          number: parseInt(
+                            e.target.options[e.target.selectedIndex].text
+                          ),
+                        });
+                      }}
+                    >
+                      {tables.map((table) => (
+                        <option key={table.id} value={table.id}>
+                          {table.number === 0 ? "Take Away" : table.number}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="text-black">
+                      {isNaN(selectedChangeTable?.number as number)
+                        ? "Take Away"
+                        : selectedChangeTable?.number}
+                    </span>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={
+                        isTableChange
+                          ? handleChangeTableOrder
+                          : () => setIsTableChange(true)
+                      }
+                      className={`border py-0.5 px-3 text-sm rounded-lg ${
+                        isTableChange ? "bg-indigo-500" : "bg-yellow-600"
+                      } `}
+                    >
+                      {isTableChange ? (
+                        isSubmitting ? (
+                          <BiLoaderAlt className="animate-spin" />
+                        ) : (
+                          "simpan"
+                        )
+                      ) : (
+                        "ubah"
+                      )}
+                    </button>
+                    {isTableChange && (
+                      <button
+                        onClick={() => setIsTableChange(false)}
+                        className="border py-0.5 px-3 text-sm rounded-lg bg-red-600"
+                      >
+                        batal
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tanggal Pesanan</span>

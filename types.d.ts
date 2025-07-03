@@ -105,7 +105,7 @@ interface INotification {
   read: boolean;
   admin_id: string;
   order_id: string;
-  type: "NEW_ORDER" | "ORDER_STATUS_CHANGE" | "PAYMENT_RECEIVED";
+  type: "NEW_ORDER" | "ORDER_STATUS_CHANGE" | "PAYMENT_RECEIVED" | "OTHER";
   created_at: string;
   updated_at: string;
   order: IOrder;

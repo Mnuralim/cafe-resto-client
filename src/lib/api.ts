@@ -491,3 +491,22 @@ export const updateAdmin = async (
 
   return response;
 };
+
+export const updateTableOrder = async (
+  tableId: string,
+  oldTable: string,
+  orderId: string
+) => {
+  const response = await fetch(`${API_URL}/orders/${orderId}/change-table`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      oldTable,
+      tableId,
+    }),
+  });
+
+  return response;
+};

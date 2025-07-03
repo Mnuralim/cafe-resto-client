@@ -36,7 +36,7 @@ export const ListTable = ({ tables }: Props) => {
     e.preventDefault();
 
     try {
-      if (!selectedTableNumber) {
+      if (!selectedTableNumber && selectedTableNumber !== 0) {
         throw new Error("Nomor meja belum diisi");
       }
 
@@ -227,7 +227,9 @@ export const ListTable = ({ tables }: Props) => {
                 {tables.map((item, index) => (
                   <tr key={item.id} className="border-b hover:bg-gray-50">
                     <td className="px-6 py-4">{index + 1}</td>
-                    <td className="px-6 py-4">Meja {item.number}</td>
+                    <td className="px-6 py-4">
+                      Meja {item.number > 0 ? item.number : "Take Away"}
+                    </td>
                     <td className="px-6 py-4">
                       <Image
                         src={`${process.env.NEXT_PUBLIC_QR_SERVER}/?size=160x160&data=${item.qr_code}`}

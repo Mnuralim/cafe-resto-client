@@ -143,6 +143,33 @@ export const NotificationList = ({ token }: Props) => {
       }
     });
 
+    socket.on("change-table-order", (notification) => {
+      console.log("Change table order notification received:", notification);
+      setNotifications((prev) => [notification.data, ...prev]);
+      setUnreadCount((prev) => prev + 1);
+      if (audioRef.current) {
+        audioRef.current.play().catch((err) => {
+          console.error("Failed to play notification sound:", err);
+        });
+      }
+
+      if (notificationPermission === "granted") {
+        showBrowserNotification(
+          "Perubahan Meja Pesanan",
+          notification.data.message
+        );
+      } else if (notificationPermission !== "denied") {
+        requestNotificationPermission().then((permission) => {
+          if (permission === "granted") {
+            showBrowserNotification(
+              "Perubahan Meja Pesanan",
+              notification.data.message
+            );
+          }
+        });
+      }
+    });
+
     // SOON
     // socket.on("payment-received", (notification) => {
     //   console.log("Payment received notification received:", notification);
@@ -215,32 +242,6 @@ export const NotificationList = ({ token }: Props) => {
     }
   };
 
-  // const handleMarkAllAsRead = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${API_URL}/api/v1/notifications/mark-all-read`,
-  //       {
-  //         method: "PATCH",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to mark all notifications as read");
-  //     }
-
-  //     setNotifications((prev) =>
-  //       prev.map((notif) => ({ ...notif, read: true }))
-  //     );
-  //     setUnreadCount(0);
-  //   } catch (error) {
-  //     console.error("Failed to mark all notifications as read:", error);
-  //   }
-  // };
-
   const handleViewAll = () => {
     console.log("View all notifications");
     fetchNotifications();
@@ -255,6 +256,8 @@ export const NotificationList = ({ token }: Props) => {
       month: "short",
     }).format(date);
   };
+
+  console.log("Notifications:", notifications);
 
   return (
     <div className="relative" ref={notifRef}>
